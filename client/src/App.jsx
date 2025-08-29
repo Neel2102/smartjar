@@ -36,6 +36,10 @@ function App() {
     localStorage.setItem('smartjar_user_id', user._id);
   };
 
+  const handleUserUpdated = (updatedUser) => {
+    setCurrentUser(updatedUser);
+  };
+
   const handleLogout = () => {
     setCurrentUser(null);
     localStorage.removeItem('smartjar_user_id');
@@ -120,7 +124,11 @@ function App() {
               path="/" 
               element={
                 currentUser ? (
-                  <Dashboard userId={currentUser._id} />
+                  <Dashboard 
+                    userId={currentUser._id} 
+                    user={currentUser}
+                    onUserUpdated={handleUserUpdated}
+                  />
                 ) : (
                   <UserSetup onUserCreated={handleUserCreated} />
                 )
