@@ -23,4 +23,16 @@ export const incomeAPI = {
   getJarBalances: (userId) => api.get('/income/jars', { params: { userId } }),
 };
 
+// Expense API calls
+export const expenseAPI = {
+  add: (expenseData) => api.post('/expenses', expenseData),
+  getAll: (userId) => api.get('/expenses', { params: { userId } }),
+  getAnalytics: (userId) => api.get('/expenses/analytics', { params: { userId } }),
+};
+
+// AI Coach API
+export const aiAPI = {
+  coach: ({ prompt, context }) => api.post('/ai/coach', { prompt, context }),
+};
+
 export default api;
