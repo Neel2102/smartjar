@@ -2,15 +2,21 @@ import React, { useState, useEffect } from 'react';
 import JarCard from '../components/JarCard';
 import IncomeForm from '../components/IncomeForm';
 import IncomeList from '../components/IncomeList';
+import ExpenseForm from '../components/ExpenseForm';
+import FinancialHealthScore from '../components/FinancialHealthScore';
 import JarRatioSettings from '../components/JarRatioSettings';
 import CSVImport from '../components/CSVImport';
 import FinancialEducation from '../components/FinancialEducation';
-import { incomeAPI } from '../services/api';
+import { incomeAPI, expenseAPI } from '../services/api';
 import { formatCurrency, calculateTotal } from '../utils/formatters';
+import Analytics from '../components/Analytics';
+import Gamification from '../components/Gamification';
+import FinancialTools from '../components/FinancialTools';
 
 const Dashboard = ({ userId, user, onUserUpdated }) => {
   const [jarBalances, setJarBalances] = useState({ salary: 0, emergency: 0, future: 0 });
   const [incomes, setIncomes] = useState([]);
+  const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState('overview');
@@ -24,13 +30,15 @@ const Dashboard = ({ userId, user, onUserUpdated }) => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [balancesResponse, incomesResponse] = await Promise.all([
+      const [balancesResponse, incomesResponse, expensesResponse] = await Promise.all([
         incomeAPI.getJarBalances(userId),
-        incomeAPI.getAll(userId)
+        incomeAPI.getAll(userId),
+        expenseAPI.getAll(userId)
       ]);
       
       setJarBalances(balancesResponse.data);
       setIncomes(incomesResponse.data);
+      setExpenses(expensesResponse.data);
     } catch (err) {
       setError('Failed to fetch data');
       console.error('Error fetching data:', err);
@@ -41,6 +49,11 @@ const Dashboard = ({ userId, user, onUserUpdated }) => {
 
   const handleIncomeAdded = (newIncome) => {
     setIncomes(prev => [newIncome, ...prev]);
+    fetchData(); // Refresh jar balances
+  };
+
+  const handleExpenseAdded = (newExpense) => {
+    setExpenses(prev => [newExpense, ...prev]);
     fetchData(); // Refresh jar balances
   };
 
@@ -93,26 +106,40 @@ const Dashboard = ({ userId, user, onUserUpdated }) => {
   }
 
   const totalIncome = calculateTotal(incomes.map(inc => inc.amount));
+  const totalExpenses = calculateTotal(expenses.map(exp => exp.amount));
   const totalSaved = jarBalances.emergency + jarBalances.future;
+  const netIncome = totalIncome - totalExpenses;
 
   const renderTabContent = () => {
     switch (activeTab) {
       case 'overview':
         return (
           <>
-            {/* Stats Overview */}
+            {/* Financial Health Score */}
+            <FinancialHealthScore 
+              user={user} 
+              jarBalances={jarBalances} 
+              incomes={incomes} 
+              expenses={expenses} 
+            />
+
+            {/* Enhanced Stats Overview */}
             <div className="stats-grid">
               <div className="stat-card">
                 <div className="stat-number">{formatCurrency(totalIncome)}</div>
                 <div className="stat-label">Total Income</div>
               </div>
               <div className="stat-card">
-                <div className="stat-number">{formatCurrency(totalSaved)}</div>
-                <div className="stat-label">Total Saved</div>
+                <div className="stat-number">{formatCurrency(totalExpenses)}</div>
+                <div className="stat-label">Total Expenses</div>
               </div>
               <div className="stat-card">
-                <div className="stat-number">{incomes.length}</div>
-                <div className="stat-label">Income Entries</div>
+                <div className="stat-number">{formatCurrency(netIncome)}</div>
+                <div className="stat-label">Net Income</div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-number">{formatCurrency(totalSaved)}</div>
+                <div className="stat-label">Total Saved</div>
               </div>
             </div>
 
@@ -138,11 +165,39 @@ const Dashboard = ({ userId, user, onUserUpdated }) => {
               />
             </div>
 
-            {/* Add Income Form */}
-            <IncomeForm onIncomeAdded={handleIncomeAdded} userId={userId} />
+            {/* Forms Section */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '2rem' }}>
+              <IncomeForm onIncomeAdded={handleIncomeAdded} userId={userId} />
+              <ExpenseForm onExpenseAdded={handleExpenseAdded} userId={userId} jarBalances={jarBalances} />
+            </div>
 
-            {/* Income History */}
-            <IncomeList incomes={incomes} />
+            {/* Income & Expense History */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+              <IncomeList incomes={incomes} />
+              <div className="income-list">
+                <h3 style={{ marginBottom: '1.5rem', color: '#333' }}>Expense History</h3>
+                {expenses.length === 0 ? (
+                  <div style={{ textAlign: 'center', color: '#666' }}>
+                    No expenses recorded yet.
+                  </div>
+                ) : (
+                  expenses.slice(0, 5).map((expense) => (
+                    <div key={expense._id} className="income-item">
+                      <div>
+                        <div className="income-amount">{formatCurrency(expense.amount)}</div>
+                        <div className="income-date">{new Date(expense.date).toLocaleDateString()}</div>
+                      </div>
+                      <div style={{ textAlign: 'right' }}>
+                        <div className="income-source">{expense.category}</div>
+                        <div style={{ fontSize: '0.8rem', color: '#666', marginTop: '0.25rem' }}>
+                          {expense.type} • {expense.jarSource}
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
           </>
         );
 
@@ -158,6 +213,13 @@ const Dashboard = ({ userId, user, onUserUpdated }) => {
 
       case 'education':
         return <FinancialEducation />;
+
+        case 'analytics':
+          return <Analytics userId={userId} incomes={incomes} expenses={expenses} jarBalances={jarBalances} />;
+        case 'gamification':
+          return <Gamification user={user} incomes={incomes} />;
+        case 'tools':
+          return <FinancialTools />;
 
       default:
         return null;
@@ -179,7 +241,11 @@ const Dashboard = ({ userId, user, onUserUpdated }) => {
             { key: 'overview', label: '📊 Overview', icon: '📊' },
             { key: 'settings', label: '⚙️ Settings', icon: '⚙️' },
             { key: 'import', label: '📥 Import', icon: '📥' },
-            { key: 'education', label: '💡 Learn', icon: '💡' }
+            { key: 'education', label: '💡 Learn', icon: '💡' },
+            { key: 'analytics', label: '📈 Analytics', icon: '📈' },
+            { key: 'gamification', label: '🏅 Rewards', icon: '🏅' },
+            { key: 'tools', label: '🧮 Tools', icon: '🧮' }
+
           ].map((tab) => (
             <button
               key={tab.key}

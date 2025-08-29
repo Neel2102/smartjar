@@ -19,6 +19,8 @@ app.get("/health", (_req, res) => res.json({ ok: true }));
 // Routes
 app.use("/api/income", require("./routes/incomeRoutes"));
 app.use("/api/users", require("./routes/userRoutes"));
+app.use("/api/expenses", require("./routes/expenseRoutes"));
+app.use("/api/ai", require("./routes/aiRoutes"));
 
 // Error handling
 app.use((err, req, res, next) => {
