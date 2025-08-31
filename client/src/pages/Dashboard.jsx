@@ -7,11 +7,15 @@ import FinancialHealthScore from '../components/FinancialHealthScore';
 import JarRatioSettings from '../components/JarRatioSettings';
 import CSVImport from '../components/CSVImport';
 import FinancialEducation from '../components/FinancialEducation';
-import { incomeAPI, expenseAPI } from '../services/api';
-import { formatCurrency, calculateTotal } from '../utils/formatters';
 import Analytics from '../components/Analytics';
 import Gamification from '../components/Gamification';
 import FinancialTools from '../components/FinancialTools';
+import SalaryProjection from '../components/SalaryProjection';
+import InvestmentAssistant from '../components/InvestmentAssistant';
+import AdvancedAIChat from '../components/AdvancedAIChat';
+import PaymentGateway from '../components/PaymentGateway';
+import { incomeAPI, expenseAPI } from '../services/api';
+import { formatCurrency, calculateTotal } from '../utils/formatters';
 
 const Dashboard = ({ userId, user, onUserUpdated }) => {
   const [jarBalances, setJarBalances] = useState({ salary: 0, emergency: 0, future: 0 });
@@ -221,6 +225,18 @@ const Dashboard = ({ userId, user, onUserUpdated }) => {
         case 'tools':
           return <FinancialTools />;
 
+      case 'salary':
+        return <SalaryProjection userId={userId} user={user} />;
+
+      case 'investment':
+        return <InvestmentAssistant user={user} jarBalances={jarBalances} />;
+
+      case 'ai-chat':
+        return <AdvancedAIChat user={user} jarBalances={jarBalances} incomes={incomes} expenses={expenses} />;
+
+      case 'payment':
+        return <PaymentGateway userId={userId} onPaymentSuccess={handleIncomeAdded} />;
+
       default:
         return null;
     }
@@ -244,8 +260,11 @@ const Dashboard = ({ userId, user, onUserUpdated }) => {
             { key: 'education', label: '💡 Learn', icon: '💡' },
             { key: 'analytics', label: '📈 Analytics', icon: '📈' },
             { key: 'gamification', label: '🏅 Rewards', icon: '🏅' },
-            { key: 'tools', label: '🧮 Tools', icon: '🧮' }
-
+            { key: 'tools', label: '🧮 Tools', icon: '🧮' },
+            { key: 'salary', label: '💰 Salary', icon: '💰' },
+            { key: 'investment', label: '🎯 Investment', icon: '🎯' },
+            { key: 'ai-chat', label: '🤖 AI Coach', icon: '🤖' },
+            { key: 'payment', label: '💳 Payment', icon: '💳' }
           ].map((tab) => (
             <button
               key={tab.key}
