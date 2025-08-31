@@ -29,20 +29,21 @@ async function getUsers(req, res) {
 async function updateRatios(req, res) {
 	try {
 		const { userId } = req.params;
-		const { salary, emergency, future } = req.body;
-		
-		if (!salary || !emergency || !future) {
-			return res.status(400).json({ error: "All ratios required" });
+		const { jarRatios } = req.body;
+
+		if (!jarRatios || !jarRatios.salary || !jarRatios.emergency || !jarRatios.future) {
+			return res.status(400).json({ error: "All jar ratios are required" });
 		}
 
-		if (salary + emergency + future !== 100) {
+		const total = jarRatios.salary + jarRatios.emergency + jarRatios.future;
+		if (total !== 100) {
 			return res.status(400).json({ error: "Ratios must sum to 100" });
 		}
 
 		const user = await User.findByIdAndUpdate(
 			userId,
-			{ jarRatios: { salary, emergency, future } },
-			{ new: true }
+			{ jarRatios },
+			{ new: true, runValidators: true }
 		);
 
 		if (!user) {
@@ -55,4 +56,34 @@ async function updateRatios(req, res) {
 	}
 }
 
-module.exports = { createUser, getUsers, updateRatios };
+async function updateUser(req, res) {
+	try {
+		const { userId } = req.params;
+		const updateData = req.body;
+
+		// Remove fields that shouldn't be updated directly
+		delete updateData._id;
+		delete updateData.email; // Email should not be changed via this endpoint
+
+		const user = await User.findByIdAndUpdate(
+			userId,
+			updateData,
+			{ new: true, runValidators: true }
+		);
+
+		if (!user) {
+			return res.status(404).json({ error: "User not found" });
+		}
+
+		res.json(user);
+	} catch (err) {
+		res.status(500).json({ error: err.message });
+	}
+}
+
+module.exports = {
+	createUser,
+	getUsers,
+	updateRatios,
+	updateUser
+};
