@@ -46,6 +46,7 @@ function App() {
     }
   }, []);
 
+
   const handleUserCreated = (user) => {
     setCurrentUser(user);
     localStorage.setItem('smartjar_user_id', user._id);
@@ -88,23 +89,15 @@ function App() {
         {/* Header */}
         <header className="header">
           <div className="container">
-            <h1>🏦 SmartJar</h1>
+            <div className="header-row">
+              <h1>🏦 SmartJar</h1>
+            </div>
             {currentUser ? (
-              <p style={{ 
-                textAlign: 'center', 
-                marginTop: '0.5rem', 
-                opacity: 0.9,
-                fontSize: '1rem'
-              }}>
+              <p className="header-subtitle">
                 Welcome back, {currentUser.name}! 👋
               </p>
             ) : (
-              <p style={{ 
-                textAlign: 'center', 
-                marginTop: '0.5rem', 
-                opacity: 0.9,
-                fontSize: '1rem'
-              }}>
+              <p className="header-subtitle">
                 Your Financial Stability Partner
               </p>
             )}

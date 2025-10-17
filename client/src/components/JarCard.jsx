@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { formatCurrency } from '../utils/formatters';
 
 const JarCard = ({ type, amount, percentage, totalIncome }) => {
@@ -32,6 +32,14 @@ const JarCard = ({ type, amount, percentage, totalIncome }) => {
 
   const jarInfo = getJarInfo();
   const progressPercentage = totalIncome > 0 ? (amount / totalIncome) * 100 : 0;
+  const barColor = useMemo(() => {
+    switch (type) {
+      case 'salary': return '#4CAF50';
+      case 'emergency': return '#FF9800';
+      case 'future': return '#2196F3';
+      default: return '#667eea';
+    }
+  }, [type]);
 
   return (
     <div className={`jar-card ${jarInfo.color}`}>
@@ -44,6 +52,18 @@ const JarCard = ({ type, amount, percentage, totalIncome }) => {
       </div>
       <div className="jar-percentage">
         {percentage}% of income • {progressPercentage.toFixed(1)}% of total
+      </div>
+      <div style={{ marginTop: '0.75rem' }}>
+        <div style={{ height: 10, background: '#eaeaea', borderRadius: 6, overflow: 'hidden' }}>
+          <div
+            style={{
+              width: `${progressPercentage}%`,
+              height: '100%',
+              background: barColor,
+              transition: 'width 800ms ease'
+            }}
+          />
+        </div>
       </div>
       <div className="jar-description" style={{ 
         marginTop: '1rem', 
