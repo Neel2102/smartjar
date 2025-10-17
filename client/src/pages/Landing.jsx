@@ -1,72 +1,79 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import '../styles/Landing.css';
 
 const Landing = () => {
   return (
-    <div className="landing-page">
-      <div className="container">
-        <div className="landing-hero">
-          <h1>🏦 SmartJar 2.0</h1>
-          <h2>Transform Your Gig Income into Financial Stability</h2>
-          <p>
-            SmartJar helps gig workers manage irregular income with our AI-powered 
-            jar system, investment recommendations, and personalized financial coaching.
+    <div className="landing-container">
+      {/* Hero Section */}
+      <section className="hero-section">
+        <div className="hero-content">
+          <div className="hero-icon" aria-hidden="true">SJ</div>
+          <h1 className="hero-title">SmartJar</h1>
+          <h2 className="hero-subtitle">Financial stability for every gig worker</h2>
+          <p className="hero-description">
+            Manage irregular income with automated jars, clear analytics, and an AI coach that keeps you on track.
           </p>
-          
-          <div className="landing-actions">
-            <Link to="/register" className="btn btn-primary btn-large">
-              Get Started Free
-            </Link>
-            <Link to="/login" className="btn btn-secondary btn-large">
-              Sign In
-            </Link>
+          <div className="hero-buttons">
+            <Link to="/register" className="btn btn-primary">Get Started Free</Link>
+            <Link to="/login" className="btn btn-secondary">Sign In</Link>
           </div>
         </div>
+      </section>
 
-        <div className="landing-features">
-          <h3>Why Choose SmartJar?</h3>
-          <div className="features-grid">
-            <div className="feature-card">
-              <div className="feature-icon">💰</div>
-              <h4>Smart Jar System</h4>
-              <p>Automatic 60/25/15 allocation for salary, emergency, and future savings</p>
-            </div>
-            <div className="feature-card">
-              <div className="feature-icon">🤖</div>
-              <h4>AI Financial Coach</h4>
-              <p>Get personalized investment advice and financial recommendations</p>
-            </div>
-            <div className="feature-card">
-              <div className="feature-icon">📊</div>
-              <h4>Advanced Analytics</h4>
-              <p>Track spending patterns and monitor your financial health score</p>
-            </div>
-            <div className="feature-card">
-              <div className="feature-icon">🎯</div>
-              <h4>Investment Assistant</h4>
-              <p>Smart investment recommendations based on your risk profile</p>
-            </div>
-            <div className="feature-card">
-              <div className="feature-icon">🏆</div>
-              <h4>Gamified Experience</h4>
-              <p>Earn rewards and achievements for good financial habits</p>
-            </div>
-            <div className="feature-card">
-              <div className="feature-icon">📱</div>
-              <h4>Mobile Friendly</h4>
-              <p>Access your financial data anywhere, anytime</p>
-            </div>
+      {/* Features Section */}
+      <section className="features-section">
+        <div className="features-header">
+          <h3 className="features-title">Why choose SmartJar?</h3>
+          <div className="title-underline" />
+        </div>
+        <div className="features-grid">
+          <div className="feature-card">
+            <div className="feature-icon blue-gradient">💼</div>
+            <div className="feature-title">Smart Jar System</div>
+            <div className="feature-description">Automatic 60/25/15 split for Salary, Emergency, and Future goals.</div>
+          </div>
+          <div className="feature-card">
+            <div className="feature-icon purple-gradient">🤖</div>
+            <div className="feature-title">AI Financial Coach</div>
+            <div className="feature-description">Context-aware guidance, nudges, and quick actions tailored to you.</div>
+          </div>
+          <div className="feature-card">
+            <div className="feature-icon indigo-gradient">📊</div>
+            <div className="feature-title">Clear Analytics</div>
+            <div className="feature-description">Understand trends, track progress, and celebrate milestones.</div>
+          </div>
+          <div className="feature-card">
+            <div className="feature-icon blue-gradient">🎯</div>
+            <div className="feature-title">Goal-first Planning</div>
+            <div className="feature-description">Define targets; SmartJar helps you reach them steadily.</div>
+          </div>
+          <div className="feature-card">
+            <div className="feature-icon purple-gradient">🏅</div>
+            <div className="feature-title">Motivating Rewards</div>
+            <div className="feature-description">Badges and streaks designed to keep you consistent.</div>
+          </div>
+          <div className="feature-card">
+            <div className="feature-icon indigo-gradient">📱</div>
+            <div className="feature-title">Anytime, Anywhere</div>
+            <div className="feature-description">Mobile-friendly experience for quick updates on the go.</div>
           </div>
         </div>
+      </section>
 
-        <div className="landing-cta">
-          <h3>Ready to Take Control of Your Finances?</h3>
-          <p>Join thousands of gig workers who have achieved financial stability with SmartJar</p>
-          <Link to="/register" className="btn btn-primary btn-large">
-            Start Your Journey Today
-          </Link>
+      {/* CTA Section */}
+      <section className="cta-section">
+        <div className="cta-content">
+          <h3 className="cta-title">Ready to take control of your money?</h3>
+          <p className="cta-description">Join thousands of riders and freelancers building safety and future—one jar at a time.</p>
+          <Link to="/register" className="btn btn-cta">Start your journey</Link>
         </div>
-      </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="footer">
+        <p>© {new Date().getFullYear()} SmartJar. All rights reserved.</p>
+      </footer>
     </div>
   );
 };
