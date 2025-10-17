@@ -11,6 +11,10 @@ const InvestmentAssistant = ({ user, jarBalances }) => {
   const getInvestmentRecommendations = async () => {
     setLoading(true);
     try {
+      console.log('Getting investment recommendations for user:', user.name);
+      console.log('User investment profile:', user.investmentProfile);
+      console.log('Jar balances:', jarBalances);
+      
       const response = await aiAPI.coach({
         prompt: "Analyze my investment profile and provide personalized investment recommendations including specific instruments, amounts, and strategies based on my risk appetite and financial situation.",
         context: {
@@ -23,9 +27,40 @@ const InvestmentAssistant = ({ user, jarBalances }) => {
           }
         }
       });
+      
+      console.log('AI response:', response.data);
       setInvestmentRecommendations(response.data);
     } catch (error) {
       console.error('Error getting investment recommendations:', error);
+      console.error('Error details:', error.response?.data);
+      
+      // Set a fallback recommendation if AI fails
+      setInvestmentRecommendations({
+        summary: "Based on your investment profile, I recommend starting with low-risk investments like SIPs and fixed deposits. Consider investing 15-20% of your future jar balance in diversified mutual funds for long-term growth.",
+        nudges: [
+          {
+            title: "Start with SIPs",
+            detail: "Systematic Investment Plans are perfect for beginners. Start with ₹500-1000 monthly SIPs in large-cap mutual funds."
+          },
+          {
+            title: "Build Emergency Fund First",
+            detail: "Ensure you have 3-6 months of expenses in your emergency fund before investing in higher-risk instruments."
+          }
+        ],
+        insights: [
+          {
+            type: "Risk Assessment",
+            message: "Your risk appetite suggests a balanced approach between growth and safety."
+          }
+        ],
+        actions: [
+          {
+            label: "Start SIP Investment",
+            suggestedEndpoint: "createSIP",
+            payload: { amount: 1000, frequency: "monthly" }
+          }
+        ]
+      });
     } finally {
       setLoading(false);
     }

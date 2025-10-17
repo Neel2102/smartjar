@@ -2,6 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
 import UserSetup from './pages/UserSetup';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Landing from './pages/Landing';
+import AnalyticsPage from './pages/Analytics';
+import EducationPage from './pages/Education';
+import SettingsPage from './pages/Settings';
+import ImportPage from './pages/Import';
+import GamificationPage from './pages/Gamification';
+import ToolsPage from './pages/Tools';
+import SalaryPage from './pages/Salary';
+import InvestmentPage from './pages/Investment';
+import AIChatPage from './pages/AIChat';
+import PaymentPage from './pages/Payment';
+import Navigation from './components/Navigation';
+import { AppProvider } from './context/AppContext';
 import { userAPI } from './services/api';
 import './styles/App.css';
 
@@ -32,6 +47,11 @@ function App() {
   }, []);
 
   const handleUserCreated = (user) => {
+    setCurrentUser(user);
+    localStorage.setItem('smartjar_user_id', user._id);
+  };
+
+  const handleUserLogin = (user) => {
     setCurrentUser(user);
     localStorage.setItem('smartjar_user_id', user._id);
   };
@@ -69,7 +89,7 @@ function App() {
         <header className="header">
           <div className="container">
             <h1>🏦 SmartJar</h1>
-            {currentUser && (
+            {currentUser ? (
               <p style={{ 
                 textAlign: 'center', 
                 marginTop: '0.5rem', 
@@ -78,63 +98,134 @@ function App() {
               }}>
                 Welcome back, {currentUser.name}! 👋
               </p>
+            ) : (
+              <p style={{ 
+                textAlign: 'center', 
+                marginTop: '0.5rem', 
+                opacity: 0.9,
+                fontSize: '1rem'
+              }}>
+                Your Financial Stability Partner
+              </p>
             )}
           </div>
         </header>
 
         {/* Navigation */}
         {currentUser && (
-          <nav className="nav">
-            <div className="container">
-              <ul className="nav-list">
-                <li>
-                  <button 
-                    onClick={handleLogout}
-                    style={{
-                      background: 'none',
-                      border: '2px solid #667eea',
-                      color: '#667eea',
-                      padding: '0.5rem 1rem',
-                      borderRadius: '5px',
-                      cursor: 'pointer',
-                      fontWeight: '500',
-                      transition: 'all 0.3s ease'
-                    }}
-                    onMouseOver={(e) => {
-                      e.target.style.background = '#667eea';
-                      e.target.style.color = 'white';
-                    }}
-                    onMouseOut={(e) => {
-                      e.target.style.background = 'none';
-                      e.target.style.color = '#667eea';
-                    }}
-                  >
-                    Logout
-                  </button>
-                </li>
-              </ul>
-            </div>
-          </nav>
+          <Navigation onLogout={handleLogout} />
         )}
 
         {/* Main Content */}
         <main>
           <Routes>
+            {/* Public Routes */}
             <Route 
               path="/" 
               element={
                 currentUser ? (
-                  <Dashboard 
-                    userId={currentUser._id} 
-                    user={currentUser}
-                    onUserUpdated={handleUserUpdated}
-                  />
+                  <Navigate to="/dashboard" replace />
                 ) : (
-                  <UserSetup onUserCreated={handleUserCreated} />
+                  <Landing />
                 )
               } 
             />
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route 
+              path="/login" 
+              element={
+                currentUser ? (
+                  <Navigate to="/dashboard" replace />
+                ) : (
+                  <Login onUserLogin={handleUserLogin} />
+                )
+              } 
+            />
+            <Route 
+              path="/register" 
+              element={
+                currentUser ? (
+                  <Navigate to="/dashboard" replace />
+                ) : (
+                  <Register onUserCreated={handleUserCreated} />
+                )
+              } 
+            />
+            
+            {/* Protected Routes */}
+            {currentUser ? (
+              <Route path="*" element={
+                <AppProvider userId={currentUser._id}>
+                  <Routes>
+                    <Route 
+                      path="/dashboard" 
+                      element={
+                        <Dashboard 
+                          userId={currentUser._id} 
+                          user={currentUser}
+                          onUserUpdated={handleUserUpdated}
+                        />
+                      } 
+                    />
+                    <Route 
+                      path="/analytics" 
+                      element={<AnalyticsPage />} 
+                    />
+                    <Route 
+                      path="/education" 
+                      element={<EducationPage />} 
+                    />
+                    <Route 
+                      path="/settings" 
+                      element={
+                        <SettingsPage 
+                          user={currentUser}
+                          onRatiosUpdated={handleUserUpdated}
+                        />
+                      } 
+                    />
+                    <Route 
+                      path="/import" 
+                      element={<ImportPage />} 
+                    />
+                    <Route 
+                      path="/gamification" 
+                      element={<GamificationPage user={currentUser} />} 
+                    />
+                    <Route 
+                      path="/tools" 
+                      element={<ToolsPage />} 
+                    />
+                    <Route 
+                      path="/salary" 
+                      element={
+                        <SalaryPage 
+                          userId={currentUser._id}
+                          user={currentUser}
+                        />
+                      } 
+                    />
+                    <Route 
+                      path="/investment" 
+                      element={<InvestmentPage user={currentUser} />} 
+                    />
+                    <Route 
+                      path="/ai-chat" 
+                      element={<AIChatPage user={currentUser} />} 
+                    />
+                    <Route 
+                      path="/payment" 
+                      element={<PaymentPage />} 
+                    />
+                    <Route path="*" element={<Navigate to="/dashboard" replace />} />
+                  </Routes>
+                </AppProvider>
+              } />
+            ) : (
+              <Route 
+                path="*" 
+                element={<Navigate to="/" replace />} 
+              />
+            )}
           </Routes>
         </main>
       </div>

@@ -9,6 +9,7 @@ const AdvancedAIChat = ({ user, jarBalances, incomes, expenses }) => {
   const [chatHistory, setChatHistory] = useState([]);
   const [suggestedQuestions, setSuggestedQuestions] = useState([]);
   const [isListening, setIsListening] = useState(false);
+  const [cooldownSec, setCooldownSec] = useState(0);
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
 
@@ -125,6 +126,7 @@ const AdvancedAIChat = ({ user, jarBalances, incomes, expenses }) => {
   const sendMessage = async (message = null) => {
     const userMessage = message || inputMessage.trim();
     if (!userMessage) return;
+    if (cooldownSec > 0) return; // respect cooldown
 
     const userMsg = {
       id: Date.now(),
@@ -163,6 +165,9 @@ const AdvancedAIChat = ({ user, jarBalances, incomes, expenses }) => {
         context: context
       });
 
+      // Debug: log structured response
+      console.log('AI coach response:', response?.data);
+
       const aiMessage = {
         id: Date.now() + 1,
         type: 'ai',
@@ -187,13 +192,53 @@ const AdvancedAIChat = ({ user, jarBalances, incomes, expenses }) => {
       }
 
     } catch (error) {
+      // Surface detailed server-side error if available
+      const serverError = error?.response?.data;
       console.error('Error sending message:', error);
+      console.error('AI server error payload:', serverError);
+
+      // Handle rate limit (429) with client-side cooldown timer
+      if (error?.response?.status === 429) {
+        const retry = Number(serverError?.retryAfter) || 60;
+        setCooldownSec(retry);
+        const timer = setInterval(() => {
+          setCooldownSec((s) => {
+            if (s <= 1) {
+              clearInterval(timer);
+              return 0;
+            }
+            return s - 1;
+          });
+        }, 1000);
+      }
+
+      // Avoid repeating the same fallback if last message was already an error
+      const last = messages[messages.length - 1];
+      if (last?.isError) {
+        setLoading(false);
+        return;
+      }
+
+      // Provide a graceful fallback AI reply so UX continues
+      const fallback = {
+        summary: "I'm having trouble reaching the AI service right now. Here's a quick tip while we fix it:",
+        nudges: [
+          { title: 'Jar Priorities', detail: 'Ensure 3-6 months of expenses in Emergency before investing.' },
+          { title: 'Expense Audit', detail: 'Review top-3 expense categories this week and set micro-budgets.' }
+        ],
+        insights: [
+          { type: 'Status', message: 'Temporary AI outage or invalid JSON from provider.' }
+        ]
+      };
+
       const errorMessage = {
         id: Date.now() + 1,
         type: 'ai',
-        content: 'Sorry, I encountered an error. Please try again or rephrase your question.',
+        content: `${fallback.summary}${serverError?.error ? ` (Details: ${serverError.error})` : ''}`,
         timestamp: new Date(),
-        isError: true
+        isError: true,
+        insights: fallback.insights,
+        nudges: fallback.nudges
       };
       setMessages(prev => [...prev, errorMessage]);
     } finally {
@@ -387,12 +432,12 @@ const AdvancedAIChat = ({ user, jarBalances, incomes, expenses }) => {
             onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
             placeholder="Ask me anything about your finances..."
             className="message-input"
-            disabled={loading}
+            disabled={loading || cooldownSec > 0}
           />
           <button
             className="voice-btn"
             onClick={handleVoiceInput}
-            disabled={loading}
+            disabled={loading || cooldownSec > 0}
             title={isListening ? 'Stop listening' : 'Voice input'}
           >
             {isListening ? '🔴' : '🎤'}
@@ -400,11 +445,16 @@ const AdvancedAIChat = ({ user, jarBalances, incomes, expenses }) => {
           <button
             className="send-btn"
             onClick={() => sendMessage()}
-            disabled={loading || !inputMessage.trim()}
+            disabled={loading || !inputMessage.trim() || cooldownSec > 0}
           >
             {loading ? '⏳' : '📤'}
           </button>
         </div>
+        {cooldownSec > 0 && (
+          <small className="input-hint" style={{ color: '#c62828' }}>
+            Please wait {cooldownSec}s due to provider rate limits.
+          </small>
+        )}
         <small className="input-hint">
           💡 Try asking about savings, investments, debt management, or spending patterns
         </small>
