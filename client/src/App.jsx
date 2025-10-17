@@ -4,10 +4,14 @@ import Dashboard from './pages/Dashboard';
 import UserSetup from './pages/UserSetup';
 import { userAPI } from './services/api';
 import './styles/App.css';
+import { BanknotesIcon } from '@heroicons/react/24/outline';
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [introSplash, setIntroSplash] = useState(false);
+  const [splashFade, setSplashFade] = useState(false);
+  const [splashName, setSplashName] = useState('');
 
   useEffect(() => {
     // Check if there's a stored user ID
@@ -30,6 +34,28 @@ function App() {
       setLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+    if (!loading && !currentUser) {
+      setIntroSplash(true);
+      setSplashFade(false);
+      setSplashName('');
+      const name = 'SmartJar';
+      let i = 0;
+      const typeTimer = setInterval(() => {
+        i += 1;
+        setSplashName(name.slice(0, i));
+        if (i >= name.length) clearInterval(typeTimer);
+      }, 90);
+      const fadeTimer = setTimeout(() => setSplashFade(true), 2500);
+      const hideTimer = setTimeout(() => setIntroSplash(false), 3000);
+      return () => {
+        clearInterval(typeTimer);
+        clearTimeout(fadeTimer);
+        clearTimeout(hideTimer);
+      };
+    }
+  }, [loading, currentUser]);
 
   const handleUserCreated = (user) => {
     setCurrentUser(user);
@@ -55,8 +81,23 @@ function App() {
         fontSize: '1.2rem'
       }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🏦</div>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
+            <BanknotesIcon style={{ width: 48, height: 48, color: '#2563eb' }} />
+          </div>
           <div>Loading SmartJar...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (introSplash && !currentUser) {
+    return (
+      <div className={`splash ${splashFade ? 'splash--fadeout' : ''}`}>
+        <div className="splash__container">
+          <div className="splash-logo">
+            <BanknotesIcon style={{ width: 160, height: 160 }} />
+          </div>
+          <div className="splash-name">{splashName}</div>
         </div>
       </div>
     );
@@ -65,57 +106,7 @@ function App() {
   return (
     <Router>
       <div className="App">
-        {/* Header */}
-        <header className="header">
-          <div className="container">
-            <h1>🏦 SmartJar</h1>
-            {currentUser && (
-              <p style={{ 
-                textAlign: 'center', 
-                marginTop: '0.5rem', 
-                opacity: 0.9,
-                fontSize: '1rem'
-              }}>
-                Welcome back, {currentUser.name}! 👋
-              </p>
-            )}
-          </div>
-        </header>
-
-        {/* Navigation */}
-        {currentUser && (
-          <nav className="nav">
-            <div className="container">
-              <ul className="nav-list">
-                <li>
-                  <button 
-                    onClick={handleLogout}
-                    style={{
-                      background: 'none',
-                      border: '2px solid #667eea',
-                      color: '#667eea',
-                      padding: '0.5rem 1rem',
-                      borderRadius: '5px',
-                      cursor: 'pointer',
-                      fontWeight: '500',
-                      transition: 'all 0.3s ease'
-                    }}
-                    onMouseOver={(e) => {
-                      e.target.style.background = '#667eea';
-                      e.target.style.color = 'white';
-                    }}
-                    onMouseOut={(e) => {
-                      e.target.style.background = 'none';
-                      e.target.style.color = '#667eea';
-                    }}
-                  >
-                    Logout
-                  </button>
-                </li>
-              </ul>
-            </div>
-          </nav>
-        )}
+        
 
         {/* Main Content */}
         <main>
@@ -128,6 +119,7 @@ function App() {
                     userId={currentUser._id} 
                     user={currentUser}
                     onUserUpdated={handleUserUpdated}
+                    onLogout={handleLogout}
                   />
                 ) : (
                   <UserSetup onUserCreated={handleUserCreated} />

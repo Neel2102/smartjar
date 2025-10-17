@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { userAPI } from '../services/api';
+import { BanknotesIcon } from '@heroicons/react/24/outline';
 
 const UserSetup = ({ onUserCreated }) => {
   const [formData, setFormData] = useState({
@@ -37,20 +38,36 @@ const UserSetup = ({ onUserCreated }) => {
     }
   };
 
+  if (loading) {
+    return (
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%)',
+        color: 'white'
+      }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.75rem' }}>
+            <BanknotesIcon style={{ width: 48, height: 48 }} />
+          </div>
+          <div style={{ fontSize: '1.25rem', fontWeight: 600 }}>Signing you in...</div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="dashboard">
       <div className="container">
         <div className="form-container" style={{ maxWidth: '600px' }}>
-          <h2 className="form-title">Welcome to SmartJar! 🏦</h2>
+          <h2 className="form-title" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+            <BanknotesIcon style={{ width: 24, height: 24, color: '#2563eb' }} />
+            Welcome to SmartJar!
+          </h2>
           
-          <div style={{ 
-            background: '#e3f2fd', 
-            color: '#1976d2', 
-            padding: '1rem', 
-            borderRadius: '10px', 
-            marginBottom: '2rem',
-            textAlign: 'center'
-          }}>
+          <div style={{ background: '#eff6ff', color: '#1f2937', padding: '1rem', borderRadius: '10px', marginBottom: '2rem', textAlign: 'center', border: '1px solid #dbeafe' }}>
             <p style={{ marginBottom: '0.5rem' }}>
               <strong>SmartJar helps gig workers manage income volatility</strong>
             </p>

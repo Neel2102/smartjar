@@ -75,16 +75,16 @@ const JarRatioSettings = ({ user, onRatiosUpdated }) => {
       <h2 className="form-title">Customize Jar Ratios</h2>
       
       <div style={{ 
-        background: '#e8f5e8', 
-        color: '#2e7d32', 
+        background: '#eff6ff', 
+        color: '#1f2937', 
         padding: '1rem', 
         borderRadius: '10px', 
         marginBottom: '1.5rem',
-        textAlign: 'center'
+        textAlign: 'center',
+        border: '1px solid #dbeafe'
       }}>
-        <p style={{ margin: 0, fontSize: '0.9rem' }}>
-          <strong>💡 Tip:</strong> Adjust how your income is split between jars. 
-          Total must equal 100%.
+        <p style={{ margin: 0, fontSize: '0.9rem', color: '#2563eb' }}>
+          <strong>Tip:</strong> Adjust how your income is split between jars. Total must equal 100%.
         </p>
       </div>
 
@@ -102,11 +102,12 @@ const JarRatioSettings = ({ user, onRatiosUpdated }) => {
 
       {success && (
         <div style={{ 
-          background: '#e8f5e8', 
-          color: '#2e7d32', 
+          background: '#eff6ff', 
+          color: '#2563eb', 
           padding: '0.75rem', 
           borderRadius: '5px', 
-          marginBottom: '1rem' 
+          marginBottom: '1rem',
+          border: '1px solid #dbeafe'
         }}>
           {success}
         </div>
@@ -189,7 +190,7 @@ const JarRatioSettings = ({ user, onRatiosUpdated }) => {
         </div>
 
         <div style={{ 
-          background: '#f5f5f5', 
+          background: '#f8fafc', 
           padding: '1rem', 
           borderRadius: '8px', 
           marginBottom: '1.5rem',
@@ -197,8 +198,8 @@ const JarRatioSettings = ({ user, onRatiosUpdated }) => {
         }}>
           <strong>Total: {Object.values(ratios).reduce((sum, val) => sum + val, 0)}%</strong>
           {Object.values(ratios).reduce((sum, val) => sum + val, 0) !== 100 && (
-            <div style={{ color: '#f57c00', fontSize: '0.9rem', marginTop: '0.5rem' }}>
-              ⚠️ Total must equal 100%
+            <div style={{ color: '#2563eb', fontSize: '0.9rem', marginTop: '0.5rem' }}>
+              Total must equal 100%
             </div>
           )}
         </div>
@@ -208,13 +209,14 @@ const JarRatioSettings = ({ user, onRatiosUpdated }) => {
             type="button" 
             onClick={resetToDefaults}
             style={{
-              background: 'none',
-              border: '2px solid #667eea',
-              color: '#667eea',
+              background: '#ffffff',
+              border: 'none',
+              color: '#2563eb',
               padding: '0.75rem 1rem',
               borderRadius: '8px',
               cursor: 'pointer',
               fontWeight: '600',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
               flex: 1
             }}
           >

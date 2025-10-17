@@ -66,7 +66,7 @@ const Analytics = ({ userId, incomes, expenses, jarBalances }) => {
               <Legend />
               <Line type="monotone" dataKey="income" stroke="#4CAF50" strokeWidth={2} dot={false} />
               <Line type="monotone" dataKey="expense" stroke="#f44336" strokeWidth={2} dot={false} />
-              <Line type="monotone" dataKey="net" stroke="#667eea" strokeWidth={2} dot={false} />
+              <Line type="monotone" dataKey="net" stroke="#2563eb" strokeWidth={2} dot={false} />
             </LineChart>
           </ResponsiveContainer>
         </div>
@@ -99,7 +99,7 @@ const Analytics = ({ userId, incomes, expenses, jarBalances }) => {
               <XAxis dataKey="name" />
               <YAxis />
               <Tooltip formatter={(v) => formatCurrency(v)} />
-              <Bar dataKey="amount" fill="#667eea" />
+              <Bar dataKey="amount" fill="#2563eb" />
             </BarChart>
           </ResponsiveContainer>
         </div>

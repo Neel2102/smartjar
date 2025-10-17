@@ -1,5 +1,6 @@
 import React from 'react';
 import { formatCurrency } from '../utils/formatters';
+import { BanknotesIcon, LifebuoyIcon, RocketLaunchIcon } from '@heroicons/react/24/outline';
 
 const JarCard = ({ type, amount, percentage, totalIncome }) => {
   const getJarInfo = () => {
@@ -9,24 +10,24 @@ const JarCard = ({ type, amount, percentage, totalIncome }) => {
           label: 'Salary Jar',
           color: 'salary',
           description: 'Daily spending needs',
-          icon: '💰'
+          icon: <BanknotesIcon className="icon" style={{ width: 32, height: 32 }} />
         };
       case 'emergency':
         return {
           label: 'Emergency Jar',
           color: 'emergency',
           description: 'Safety buffer',
-          icon: '🆘'
+          icon: <LifebuoyIcon className="icon" style={{ width: 32, height: 32 }} />
         };
       case 'future':
         return {
           label: 'Future Jar',
           color: 'future',
           description: 'Long-term savings',
-          icon: '🚀'
+          icon: <RocketLaunchIcon className="icon" style={{ width: 32, height: 32 }} />
         };
       default:
-        return { label: '', color: '', description: '', icon: '' };
+        return { label: '', color: '', description: '', icon: null };
     }
   };
 
@@ -35,7 +36,7 @@ const JarCard = ({ type, amount, percentage, totalIncome }) => {
 
   return (
     <div className={`jar-card ${jarInfo.color}`}>
-      <div className="jar-icon" style={{ fontSize: '3rem', marginBottom: '1rem' }}>
+      <div className="jar-icon" style={{ marginBottom: '1rem', color: '#2563eb' }}>
         {jarInfo.icon}
       </div>
       <div className="jar-label">{jarInfo.label}</div>

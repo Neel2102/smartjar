@@ -12,8 +12,19 @@ import { formatCurrency, calculateTotal } from '../utils/formatters';
 import Analytics from '../components/Analytics';
 import Gamification from '../components/Gamification';
 import FinancialTools from '../components/FinancialTools';
+import {
+  ChartBarSquareIcon,
+  Cog6ToothIcon,
+  ArrowDownTrayIcon,
+  LightBulbIcon,
+  ChartBarIcon,
+  TrophyIcon,
+  CalculatorIcon,
+  ArrowRightOnRectangleIcon,
+  BanknotesIcon
+} from '@heroicons/react/24/outline';
 
-const Dashboard = ({ userId, user, onUserUpdated }) => {
+const Dashboard = ({ userId, user, onUserUpdated, onLogout }) => {
   const [jarBalances, setJarBalances] = useState({ salary: 0, emergency: 0, future: 0 });
   const [incomes, setIncomes] = useState([]);
   const [expenses, setExpenses] = useState([]);
@@ -227,48 +238,76 @@ const Dashboard = ({ userId, user, onUserUpdated }) => {
   };
 
   return (
-    <div className="dashboard">
-      <div className="container">
-        {/* Tab Navigation */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'center',
-          marginBottom: '2rem',
-          flexWrap: 'wrap',
-          gap: '0.5rem'
-        }}>
-          {[
-            { key: 'overview', label: '📊 Overview', icon: '📊' },
-            { key: 'settings', label: '⚙️ Settings', icon: '⚙️' },
-            { key: 'import', label: '📥 Import', icon: '📥' },
-            { key: 'education', label: '💡 Learn', icon: '💡' },
-            { key: 'analytics', label: '📈 Analytics', icon: '📈' },
-            { key: 'gamification', label: '🏅 Rewards', icon: '🏅' },
-            { key: 'tools', label: '🧮 Tools', icon: '🧮' }
-
-          ].map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              style={{
-                background: activeTab === tab.key ? '#667eea' : 'white',
-                color: activeTab === tab.key ? 'white' : '#667eea',
-                border: '2px solid #667eea',
-                padding: '0.75rem 1.5rem',
-                borderRadius: '25px',
-                cursor: 'pointer',
-                fontWeight: '600',
-                transition: 'all 0.3s ease',
-                fontSize: '0.9rem'
-              }}
-            >
-              {tab.label}
-            </button>
-          ))}
+    <div className="layout">
+      <aside className="sidebar">
+        <div className="sidebar-brand">
+          <div className="brand-icon">
+            <BanknotesIcon className="icon" />
+          </div>
+          <span className="brand-text">SmartJar</span>
         </div>
-
-        {/* Tab Content */}
-        {renderTabContent()}
+        <div className="sidebar-section">
+          <div
+            className={`sidebar-item ${activeTab === 'overview' ? 'active' : ''}`}
+            onClick={() => setActiveTab('overview')}
+          >
+            <ChartBarSquareIcon className="icon" />
+            <span>Overview</span>
+          </div>
+          <div
+            className={`sidebar-item ${activeTab === 'analytics' ? 'active' : ''}`}
+            onClick={() => setActiveTab('analytics')}
+          >
+            <ChartBarIcon className="icon" />
+            <span>Analytics</span>
+          </div>
+          <div
+            className={`sidebar-item ${activeTab === 'tools' ? 'active' : ''}`}
+            onClick={() => setActiveTab('tools')}
+          >
+            <CalculatorIcon className="icon" />
+            <span>Tools</span>
+          </div>
+          <div
+            className={`sidebar-item ${activeTab === 'import' ? 'active' : ''}`}
+            onClick={() => setActiveTab('import')}
+          >
+            <ArrowDownTrayIcon className="icon" />
+            <span>Import</span>
+          </div>
+          <div
+            className={`sidebar-item ${activeTab === 'education' ? 'active' : ''}`}
+            onClick={() => setActiveTab('education')}
+          >
+            <LightBulbIcon className="icon" />
+            <span>Learn</span>
+          </div>
+          <div
+            className={`sidebar-item ${activeTab === 'gamification' ? 'active' : ''}`}
+            onClick={() => setActiveTab('gamification')}
+          >
+            <TrophyIcon className="icon" />
+            <span>Rewards</span>
+          </div>
+        </div>
+        <div className="sidebar-section">
+          <div
+            className={`sidebar-item ${activeTab === 'settings' ? 'active' : ''}`}
+            onClick={() => setActiveTab('settings')}
+          >
+            <Cog6ToothIcon className="icon" />
+            <span>Settings</span>
+          </div>
+          <button className="sidebar-logout" onClick={onLogout}>
+            <ArrowRightOnRectangleIcon className="icon" />
+            <span>Logout</span>
+          </button>
+        </div>
+      </aside>
+      <div className="content">
+        <div className="container">
+          {renderTabContent()}
+        </div>
       </div>
     </div>
   );
