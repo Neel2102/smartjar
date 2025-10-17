@@ -85,7 +85,7 @@ function App() {
 
   return (
     <Router>
-      <div className="App">
+      <div className="App with-sidebar">
         {/* Header */}
         <header className="header">
           <div className="container">

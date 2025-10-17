@@ -138,64 +138,27 @@ const Navigation = ({ onLogout }) => {
   };
 
   return (
-    <nav className="navigation">
-      <div className="container">
-        <div className="nav-content">
-          {/* Desktop Navigation */}
-          <div className="nav-desktop">
-            <ul className="nav-list">
-              {navItems.map((item) => (
-                <li key={item.path} className="nav-item">
-                  <Link
-                    to={item.path}
-                    className={`nav-link ${isActive(item.path) ? 'active' : ''}`}
-                  >
-                    <span className="nav-icon"><SvgIcon name={item.icon} /></span>
-                    <span className="nav-label">{item.label}</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Mobile Navigation */}
-          <div className="nav-mobile">
-            <div className="nav-mobile-header">
-              <h3>SmartJar</h3>
-              <button className="mobile-menu-toggle" onClick={() => setMobileOpen(v => !v)} aria-expanded={mobileOpen} aria-controls="mobile-menu">
-                ☰
-              </button>
-            </div>
-            <div id="mobile-menu" className={`nav-mobile-menu ${mobileOpen ? 'active' : ''}`}>
-              <ul className="nav-mobile-list">
-                {navItems.map((item) => (
-                  <li key={item.path} className="nav-mobile-item">
-                    <Link
-                      to={item.path}
-                      className={`nav-mobile-link ${isActive(item.path) ? 'active' : ''}`}
-                      onClick={() => setMobileOpen(false)}
-                    >
-                      <span className="nav-icon"><SvgIcon name={item.icon} /></span>
-                      <span className="nav-label">{item.label}</span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          {/* Logout Button */}
-          <div className="nav-logout">
-            <button 
-              onClick={onLogout}
-              className="logout-btn"
-            >
-              Logout
-            </button>
-          </div>
-        </div>
+    <aside className="sidebar" role="navigation" aria-label="Main">
+      <div className="sidebar-header">
+        <div className="sidebar-logo">SJ</div>
+        <div className="sidebar-title">SmartJar</div>
       </div>
-    </nav>
+      <nav className="sidebar-nav">
+        <ul className="sidebar-list">
+          {navItems.map((item) => (
+            <li key={item.path}>
+              <Link to={item.path} className={`sidebar-link ${isActive(item.path) ? 'active' : ''}`}>
+                <span className="sidebar-icon"><SvgIcon name={item.icon} /></span>
+                <span>{item.label}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
+      <div className="sidebar-footer">
+        <button className="sidebar-logout" onClick={onLogout}>Logout</button>
+      </div>
+    </aside>
   );
 };
 
