@@ -1,5 +1,8 @@
 import React from 'react';
+<<<<<<< HEAD
 import { HeartIcon, LightBulbIcon } from '@heroicons/react/24/outline';
+=======
+>>>>>>> origin/main
 
 const FinancialHealthScore = ({ user, jarBalances, incomes, expenses }) => {
   // Simple score calculation
@@ -38,11 +41,19 @@ const FinancialHealthScore = ({ user, jarBalances, incomes, expenses }) => {
   if (jarBalances.emergency > 0) score += 15;
 
   const getHealthLevel = (score) => {
+<<<<<<< HEAD
     if (score >= 80) return { level: 'Excellent', color: '#1d4ed8' };
     if (score >= 60) return { level: 'Good', color: '#2563eb' };
     if (score >= 40) return { level: 'Fair', color: '#3b82f6' };
     if (score >= 20) return { level: 'Poor', color: '#60a5fa' };
     return { level: 'Critical', color: '#93c5fd' };
+=======
+    if (score >= 80) return { level: 'Excellent', color: '#4caf50', emoji: '🏆' };
+    if (score >= 60) return { level: 'Good', color: '#8bc34a', emoji: '👍' };
+    if (score >= 40) return { level: 'Fair', color: '#ff9800', emoji: '⚠️' };
+    if (score >= 20) return { level: 'Poor', color: '#f44336', emoji: '😟' };
+    return { level: 'Critical', color: '#d32f2f', emoji: '🚨' };
+>>>>>>> origin/main
   };
 
   const healthLevel = getHealthLevel(score);
@@ -55,9 +66,14 @@ const FinancialHealthScore = ({ user, jarBalances, incomes, expenses }) => {
       boxShadow: '0 5px 15px rgba(0,0,0,0.1)',
       marginBottom: '2rem'
     }}>
+<<<<<<< HEAD
       <h3 style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '1.5rem', color: '#1f2937' }}>
         <HeartIcon style={{ width: 22, height: 22, color: '#2563eb' }} />
         Financial Health Score
+=======
+      <h3 style={{ textAlign: 'center', marginBottom: '1.5rem', color: '#333' }}>
+        💚 Financial Health Score
+>>>>>>> origin/main
       </h3>
 
       <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
@@ -65,11 +81,16 @@ const FinancialHealthScore = ({ user, jarBalances, incomes, expenses }) => {
           {score}/100
         </div>
         <div style={{ fontSize: '1.2rem', color: healthLevel.color, fontWeight: '600' }}>
+<<<<<<< HEAD
           {healthLevel.level}
+=======
+          {healthLevel.emoji} {healthLevel.level}
+>>>>>>> origin/main
         </div>
       </div>
 
       <div style={{
+<<<<<<< HEAD
         background: '#eff6ff',
         padding: '1rem',
         borderRadius: '8px',
@@ -93,6 +114,28 @@ const FinancialHealthScore = ({ user, jarBalances, incomes, expenses }) => {
           </p>
         ) : (
           <p style={{ margin: 0, fontSize: '0.9rem', color: '#2563eb' }}>
+=======
+        background: '#e3f2fd',
+        padding: '1rem',
+        borderRadius: '8px',
+        borderLeft: '4px solid #1976d2'
+      }}>
+        <h5 style={{ margin: '0 0 0.5rem 0', color: '#1976d2' }}>💡 Recommendations:</h5>
+        {score >= 80 ? (
+          <p style={{ margin: 0, fontSize: '0.9rem', color: '#1976d2' }}>
+            Keep up the excellent work! Consider setting more ambitious financial goals.
+          </p>
+        ) : score >= 60 ? (
+          <p style={{ margin: 0, fontSize: '0.9rem', color: '#1976d2' }}>
+            Focus on building your emergency fund and maintaining consistent income tracking.
+          </p>
+        ) : score >= 40 ? (
+          <p style={{ margin: 0, fontSize: '0.9rem', color: '#1976d2' }}>
+            Prioritize emergency savings and review your expense categories regularly.
+          </p>
+        ) : (
+          <p style={{ margin: 0, fontSize: '0.9rem', color: '#1976d2' }}>
+>>>>>>> origin/main
             Start with basic income tracking and aim to save at least 10% of your income.
           </p>
         )}

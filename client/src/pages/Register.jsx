@@ -1,0 +1,212 @@
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { userAPI } from '../services/api';
+
+const Register = ({ onUserCreated }) => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    location: '',
+    password: '',
+    confirmPassword: ''
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+
+    // Validate passwords match
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
+      setLoading(false);
+      return;
+    }
+
+    // Validate password strength
+    if (formData.password.length < 6) {
+      setError('Password must be at least 6 characters long');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const userData = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        location: formData.location,
+        // Set default values for new users
+        jarRatios: { salary: 60, emergency: 25, future: 15 },
+        monthlyIncomeTarget: 0,
+        emergencyFundTarget: 0,
+        onboardingCompleted: false
+      };
+
+      const response = await userAPI.create(userData);
+      onUserCreated(response.data);
+      navigate('/dashboard');
+    } catch (err) {
+      console.error('Registration error:', err);
+      if (err.response?.data?.error) {
+        setError(err.response.data.error);
+      } else {
+        setError('Registration failed. Please try again.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateFormData = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  return (
+    <div className="auth-page">
+      <div className="container">
+        <div className="auth-container">
+          <div className="auth-header">
+            <h1>🚀 Join SmartJar Today</h1>
+            <p>Start your journey to financial stability</p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="auth-form">
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="name">Full Name *</label>
+                <input
+                  id="name"
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => updateFormData('name', e.target.value)}
+                  placeholder="Enter your full name"
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="email">Email Address *</label>
+                <input
+                  id="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => updateFormData('email', e.target.value)}
+                  placeholder="Enter your email"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="phone">Phone Number</label>
+                <input
+                  id="phone"
+                  type="tel"
+                  value={formData.phone}
+                  onChange={(e) => updateFormData('phone', e.target.value)}
+                  placeholder="Enter your phone number"
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="location">City/Location</label>
+                <input
+                  id="location"
+                  type="text"
+                  value={formData.location}
+                  onChange={(e) => updateFormData('location', e.target.value)}
+                  placeholder="Enter your city"
+                />
+              </div>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="password">Password *</label>
+                <input
+                  id="password"
+                  type="password"
+                  value={formData.password}
+                  onChange={(e) => updateFormData('password', e.target.value)}
+                  placeholder="Create a password"
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="confirmPassword">Confirm Password *</label>
+                <input
+                  id="confirmPassword"
+                  type="password"
+                  value={formData.confirmPassword}
+                  onChange={(e) => updateFormData('confirmPassword', e.target.value)}
+                  placeholder="Confirm your password"
+                  required
+                />
+              </div>
+            </div>
+
+            {error && (
+              <div className="error-message">
+                {error}
+              </div>
+            )}
+
+            <button 
+              type="submit" 
+              className="btn btn-primary btn-full"
+              disabled={loading || !formData.name || !formData.email || !formData.password}
+            >
+              {loading ? 'Creating Account...' : 'Create Account'}
+            </button>
+
+            <div className="auth-footer">
+              <p>
+                Already have an account? 
+                <Link to="/login" className="auth-link">
+                  Sign in here
+                </Link>
+              </p>
+            </div>
+          </form>
+
+          <div className="auth-benefits">
+            <h3>What You'll Get</h3>
+            <div className="benefits-list">
+              <div className="benefit-item">
+                <span className="benefit-icon">🎯</span>
+                <div>
+                  <h4>Personalized Financial Plan</h4>
+                  <p>AI-powered recommendations based on your profile</p>
+                </div>
+              </div>
+              <div className="benefit-item">
+                <span className="benefit-icon">📈</span>
+                <div>
+                  <h4>Investment Assistant</h4>
+                  <p>Smart investment recommendations and portfolio tracking</p>
+                </div>
+              </div>
+              <div className="benefit-item">
+                <span className="benefit-icon">🏆</span>
+                <div>
+                  <h4>Gamified Experience</h4>
+                  <p>Earn rewards and achievements for good financial habits</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Register;

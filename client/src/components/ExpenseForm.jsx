@@ -13,6 +13,7 @@ const ExpenseForm = ({ onExpenseAdded, userId, jarBalances }) => {
   const [error, setError] = useState('');
 
   const categories = [
+<<<<<<< HEAD
     { value: 'fuel', label: 'Fuel', color: '#f57c00' },
     { value: 'maintenance', label: 'Maintenance', color: '#1976d2' },
     { value: 'food', label: 'Food', color: '#388e3c' },
@@ -22,6 +23,17 @@ const ExpenseForm = ({ onExpenseAdded, userId, jarBalances }) => {
     { value: 'health', label: 'Health', color: '#f44336' },
     { value: 'transport', label: 'Transport', color: '#009688' },
     { value: 'other', label: 'Other', color: '#795548' }
+=======
+    { value: 'fuel', label: '🚗 Fuel', color: '#f57c00' },
+    { value: 'maintenance', label: '🔧 Maintenance', color: '#1976d2' },
+    { value: 'food', label: '🍕 Food', color: '#388e3c' },
+    { value: 'rent', label: '🏠 Rent', color: '#7b1fa2' },
+    { value: 'utilities', label: '⚡ Utilities', color: '#ff9800' },
+    { value: 'entertainment', label: '🎬 Entertainment', color: '#e91e63' },
+    { value: 'health', label: '🏥 Health', color: '#f44336' },
+    { value: 'transport', label: '🚌 Transport', color: '#009688' },
+    { value: 'other', label: '📦 Other', color: '#795548' }
+>>>>>>> origin/main
   ];
 
   const handleChange = (e) => {

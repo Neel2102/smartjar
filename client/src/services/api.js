@@ -14,6 +14,10 @@ export const userAPI = {
   create: (userData) => api.post('/users', userData),
   getAll: () => api.get('/users'),
   updateRatios: (userId, ratios) => api.put(`/users/${userId}/ratios`, ratios),
+<<<<<<< HEAD
+=======
+  update: (userId, userData) => api.put(`/users/${userId}`, userData),
+>>>>>>> origin/main
 };
 
 // Income API calls

@@ -75,6 +75,7 @@ const JarRatioSettings = ({ user, onRatiosUpdated }) => {
       <h2 className="form-title">Customize Jar Ratios</h2>
       
       <div style={{ 
+<<<<<<< HEAD
         background: '#eff6ff', 
         color: '#1f2937', 
         padding: '1rem', 
@@ -85,6 +86,18 @@ const JarRatioSettings = ({ user, onRatiosUpdated }) => {
       }}>
         <p style={{ margin: 0, fontSize: '0.9rem', color: '#2563eb' }}>
           <strong>Tip:</strong> Adjust how your income is split between jars. Total must equal 100%.
+=======
+        background: '#e8f5e8', 
+        color: '#2e7d32', 
+        padding: '1rem', 
+        borderRadius: '10px', 
+        marginBottom: '1.5rem',
+        textAlign: 'center'
+      }}>
+        <p style={{ margin: 0, fontSize: '0.9rem' }}>
+          <strong>💡 Tip:</strong> Adjust how your income is split between jars. 
+          Total must equal 100%.
+>>>>>>> origin/main
         </p>
       </div>
 
@@ -102,12 +115,20 @@ const JarRatioSettings = ({ user, onRatiosUpdated }) => {
 
       {success && (
         <div style={{ 
+<<<<<<< HEAD
           background: '#eff6ff', 
           color: '#2563eb', 
           padding: '0.75rem', 
           borderRadius: '5px', 
           marginBottom: '1rem',
           border: '1px solid #dbeafe'
+=======
+          background: '#e8f5e8', 
+          color: '#2e7d32', 
+          padding: '0.75rem', 
+          borderRadius: '5px', 
+          marginBottom: '1rem' 
+>>>>>>> origin/main
         }}>
           {success}
         </div>
@@ -190,7 +211,11 @@ const JarRatioSettings = ({ user, onRatiosUpdated }) => {
         </div>
 
         <div style={{ 
+<<<<<<< HEAD
           background: '#f8fafc', 
+=======
+          background: '#f5f5f5', 
+>>>>>>> origin/main
           padding: '1rem', 
           borderRadius: '8px', 
           marginBottom: '1.5rem',
@@ -198,8 +223,13 @@ const JarRatioSettings = ({ user, onRatiosUpdated }) => {
         }}>
           <strong>Total: {Object.values(ratios).reduce((sum, val) => sum + val, 0)}%</strong>
           {Object.values(ratios).reduce((sum, val) => sum + val, 0) !== 100 && (
+<<<<<<< HEAD
             <div style={{ color: '#2563eb', fontSize: '0.9rem', marginTop: '0.5rem' }}>
               Total must equal 100%
+=======
+            <div style={{ color: '#f57c00', fontSize: '0.9rem', marginTop: '0.5rem' }}>
+              ⚠️ Total must equal 100%
+>>>>>>> origin/main
             </div>
           )}
         </div>
@@ -209,14 +239,23 @@ const JarRatioSettings = ({ user, onRatiosUpdated }) => {
             type="button" 
             onClick={resetToDefaults}
             style={{
+<<<<<<< HEAD
               background: '#ffffff',
               border: 'none',
               color: '#2563eb',
+=======
+              background: 'none',
+              border: '2px solid #667eea',
+              color: '#667eea',
+>>>>>>> origin/main
               padding: '0.75rem 1rem',
               borderRadius: '8px',
               cursor: 'pointer',
               fontWeight: '600',
+<<<<<<< HEAD
               boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+=======
+>>>>>>> origin/main
               flex: 1
             }}
           >

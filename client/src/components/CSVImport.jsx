@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { incomeAPI } from '../services/api';
+<<<<<<< HEAD
 import { InformationCircleIcon, ArrowDownTrayIcon } from '@heroicons/react/24/outline';
+=======
+>>>>>>> origin/main
 
 const CSVImport = ({ userId, onIncomesImported }) => {
   const [file, setFile] = useState(null);
@@ -142,14 +145,28 @@ const CSVImport = ({ userId, onIncomesImported }) => {
     <div className="form-container">
       <h2 className="form-title">Import Income from CSV</h2>
       
+<<<<<<< HEAD
       <div style={{ background: '#eff6ff', color: '#1f2937', padding: '1rem', borderRadius: '10px', marginBottom: '1.5rem', textAlign: 'center', border: '1px solid #dbeafe' }}>
         <p style={{ margin: 0, fontSize: '0.9rem', display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
           <InformationCircleIcon style={{ width: 18, height: 18, color: '#2563eb' }} />
           <strong>CSV Format:</strong> amount, source, receivedAt (optional)
+=======
+      <div style={{ 
+        background: '#e3f2fd', 
+        color: '#1976d2', 
+        padding: '1rem', 
+        borderRadius: '10px', 
+        marginBottom: '1.5rem',
+        textAlign: 'center'
+      }}>
+        <p style={{ margin: 0, fontSize: '0.9rem' }}>
+          <strong>📊 CSV Format:</strong> amount, source, receivedAt (optional)
+>>>>>>> origin/main
         </p>
         <button 
           onClick={downloadTemplate}
           style={{
+<<<<<<< HEAD
             background: 'white',
             border: '1px solid #2563eb',
             color: '#2563eb',
@@ -162,6 +179,19 @@ const CSVImport = ({ userId, onIncomesImported }) => {
           }}
         >
           <ArrowDownTrayIcon style={{ width: 16, height: 16 }} /> Template
+=======
+            background: 'none',
+            border: '1px solid #1976d2',
+            color: '#1976d2',
+            padding: '0.5rem 1rem',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            marginTop: '0.5rem',
+            fontSize: '0.8rem'
+          }}
+        >
+          Download Template
+>>>>>>> origin/main
         </button>
       </div>
 
