@@ -6,6 +6,7 @@ import ExpenseForm from '../components/ExpenseForm';
 import FinancialHealthScore from '../components/FinancialHealthScore';
 // Removed per simplified dashboard; these features are accessible via top navigation routes
 import ProgressRing from '../components/ProgressRing';
+import PageLayout from '../components/PageLayout';
 import { incomeAPI, expenseAPI } from '../services/api';
 import { formatCurrency, calculateTotal } from '../utils/formatters';
 
@@ -109,15 +110,14 @@ const Dashboard = ({ userId, user, onUserUpdated }) => {
   // Dashboard now focuses on Overview only; other sections are accessible via the top navigation routes
 
   return (
-    <div className="dashboard">
-      <div className="container">
-        {/* Overview */}
-        <FinancialHealthScore 
-          user={user} 
-          jarBalances={jarBalances} 
-          incomes={incomes} 
-          expenses={expenses} 
-        />
+    <PageLayout user={user} showWelcome={true} className="dashboard">
+      {/* Overview */}
+      <FinancialHealthScore 
+        user={user} 
+        jarBalances={jarBalances} 
+        incomes={incomes} 
+        expenses={expenses} 
+      />
 
         <div className="stats-grid">
           <div className="stat-card">
@@ -199,8 +199,7 @@ const Dashboard = ({ userId, user, onUserUpdated }) => {
             )}
           </div>
         </div>
-      </div>
-    </div>
+    </PageLayout>
   );
 };
 

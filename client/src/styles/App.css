@@ -136,10 +136,36 @@ body, .App {
 .sidebar-logout:hover { background: #FEF2F2; border-color: #FECACA; }
 
 /* Layout shift for sidebar */
-.with-sidebar main, .with-sidebar .header .container, .with-sidebar .navigation-placeholder { margin-left: 240px; }
+.with-sidebar main:not(.landing-main), .with-sidebar .header .container, .with-sidebar .navigation-placeholder { margin-left: 240px; }
 
 /* Legacy nav content hidden when sidebar present */
 .navigation { display: none; }
+
+/* Welcome Header */
+.welcome-header {
+  background: var(--card);
+  padding: var(--spacing-lg);
+  margin: var(--spacing-lg) 0;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+.welcome-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0 0 var(--spacing-sm) 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.welcome-subtitle {
+  color: var(--muted);
+  margin: 0;
+  font-size: 0.95rem;
+}
 
 /* Desktop Navigation */
 .nav-desktop {

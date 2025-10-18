@@ -1,20 +1,19 @@
 import React from 'react';
 import InvestmentAssistant from '../components/InvestmentAssistant';
+import PageLayout from '../components/PageLayout';
 import { useApp } from '../context/AppContext';
 
 const InvestmentPage = ({ user }) => {
   const { jarBalances } = useApp();
 
   return (
-    <div className="page">
-      <div className="container">
-        <div className="page-header">
-          <h1>🎯 Investment Assistant</h1>
-          <p>Get personalized investment recommendations</p>
-        </div>
-        <InvestmentAssistant user={user} jarBalances={jarBalances} />
-      </div>
-    </div>
+    <PageLayout
+      title="🎯 Investment Assistant"
+      subtitle="Get personalized investment recommendations"
+      user={user}
+    >
+      <InvestmentAssistant user={user} jarBalances={jarBalances} />
+    </PageLayout>
   );
 };
 

@@ -1,17 +1,16 @@
 import React from 'react';
 import FinancialEducation from '../components/FinancialEducation';
+import PageLayout from '../components/PageLayout';
 
-const EducationPage = () => {
+const EducationPage = ({ user }) => {
   return (
-    <div className="page">
-      <div className="container">
-        <div className="page-header">
-          <h1>💡 Financial Education</h1>
-          <p>Learn essential financial concepts and best practices</p>
-        </div>
-        <FinancialEducation />
-      </div>
-    </div>
+    <PageLayout
+      title="💡 Financial Education"
+      subtitle="Learn essential financial concepts and best practices"
+      user={user}
+    >
+      <FinancialEducation />
+    </PageLayout>
   );
 };
 

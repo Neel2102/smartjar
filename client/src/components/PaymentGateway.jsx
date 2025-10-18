@@ -342,7 +342,7 @@ const PaymentGateway = ({ userId, onPaymentSuccess }) => {
   return (
     <div className="payment-gateway">
       <div className="payment-header">
-        <p>Deposit your daily earnings securely</p>
+        {/* <p>Deposit your daily earnings securely</p> */}
       </div>
 
       <div className="payment-container">

@@ -1,20 +1,19 @@
 import React from 'react';
 import CSVImport from '../components/CSVImport';
+import PageLayout from '../components/PageLayout';
 import { useApp } from '../context/AppContext';
 
-const ImportPage = () => {
+const ImportPage = ({ user }) => {
   const { userId, handleIncomesImported } = useApp();
 
   return (
-    <div className="page">
-      <div className="container">
-        <div className="page-header">
-          <h1>📥 Import Data</h1>
-          <p>Bulk import your income data from CSV files</p>
-        </div>
-        <CSVImport userId={userId} onIncomesImported={handleIncomesImported} />
-      </div>
-    </div>
+    <PageLayout
+      title="📥 Import Data"
+      subtitle="Bulk import your income data from CSV files"
+      user={user}
+    >
+      <CSVImport userId={userId} onIncomesImported={handleIncomesImported} />
+    </PageLayout>
   );
 };
 

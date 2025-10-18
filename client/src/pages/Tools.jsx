@@ -1,17 +1,16 @@
 import React from 'react';
 import FinancialTools from '../components/FinancialTools';
+import PageLayout from '../components/PageLayout';
 
-const ToolsPage = () => {
+const ToolsPage = ({ user }) => {
   return (
-    <div className="page">
-      <div className="container">
-        <div className="page-header">
-          <h1>🧮 Financial Tools</h1>
-          <p>Useful calculators and financial planning tools</p>
-        </div>
-        <FinancialTools />
-      </div>
-    </div>
+    <PageLayout
+      title="🧮 Financial Tools"
+      subtitle="Useful calculators and financial planning tools"
+      user={user}
+    >
+      <FinancialTools />
+    </PageLayout>
   );
 };
 

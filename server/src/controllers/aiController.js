@@ -58,6 +58,8 @@ async function getCoachReply(req, res) {
 			"Always tailor responses to the specific USER PROMPT and the provided CONTEXT.",
 			"Vary your guidance so that different prompts produce different, targeted advice.",
 			"In the summary, reference the user's question briefly before giving advice.",
+			"Special handling for greetings: If the user says hi, hello, hey, good morning/afternoon/evening, greetings, how are you, what's up, howdy, respond warmly with their name and offer to help with financial questions. For greetings, keep nudges, insights, and actions arrays empty to show only the main summary message.",
+			"Always acknowledge the user by name when available in the context.",
 			"Return STRICT JSON ONLY, no markdown or extra prose outside JSON.",
 			"JSON shape: {\n  \"summary\": string,\n  \"nudges\": [{\"title\": string, \"detail\": string}],\n  \"insights\": [{\"type\": string, \"message\": string}],\n  \"actions\": [{\"label\": string, \"suggestedEndpoint\": string, \"payload\": object}]\n}",
 			"Guidelines: 1) Use user's ratios, balances, incomes/expenses if present. 2) Provide 2-4 nudges specific to the prompt. 3) Provide 1-3 actionable next steps in actions. 4) Keep summary concise (<= 120 words)."
@@ -179,8 +181,15 @@ async function getCoachReply(req, res) {
               );
               insights.push({ type: 'Tradeoff', message: 'Balance debt paydown with emergency savings to avoid new borrowing.' });
               actions.push({ label: 'Debt Planner', suggestedEndpoint: 'openTools', payload: { tool: 'debt' } });
+            } else if (prompt.includes('hi') || prompt.includes('hello') || prompt.includes('hey') || prompt.includes('good morning') || prompt.includes('good afternoon') || prompt.includes('good evening') || prompt.includes('greetings') || prompt.includes('how are you') || prompt.includes('what\'s up') || prompt.includes('howdy')) {
+              const userName = ctx?.user?.name || 'there';
+              summary = `Hello ${userName}! 👋 I'm your SmartJar AI Financial Coach. I'm here to help you with your financial goals and decisions. How can I assist you today?`;
+              // Keep nudges, insights, and actions empty for clean greeting response
+              nudges = [];
+              insights = [];
+              actions = [];
             } else {
-              summary = "Here’s guidance based on your jars and goals while AI is cooling down. Ask a follow-up for more detail.";
+              summary = "Here's guidance based on your jars and goals while AI is cooling down. Ask a follow-up for more detail.";
               nudges.push(
                 { title: 'Jar Priorities', detail: 'Keep Emergency ahead of Future until cushion is built.' },
                 { title: 'Weekly Check-in', detail: 'Review incomes/expenses every Sunday and rebalance jars.' }

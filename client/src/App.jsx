@@ -85,24 +85,25 @@ function App() {
 
   return (
     <Router>
-      <div className={`App ${currentUser ? 'with-sidebar' : ''}`}>
+      <div className="App with-sidebar">
         {/* Header */}
-        <header className="header">
+        {/* <header className="header">
           <div className="container">
             <div className="header-row">
-              <h1>🏦 SmartJar</h1>
-            </div>
+              {/* <h1>🏦 SmartJar</h1> */}
+            {/* </div>
             {currentUser ? (
               <p className="header-subtitle">
                 Welcome back, {currentUser.name}! 👋
               </p>
             ) : (
-              <p className="header-subtitle">
-                Your Financial Stability Partner
-              </p>
+              <p className="header-subtitle"> */}
+                {/* Your Financial Stability Partner */}
+              {/* </p>
             )}
           </div>
-        </header>
+        </header> */} 
+        {/* */} 
 
         {/* Navigation */}
         {currentUser && (
@@ -110,7 +111,7 @@ function App() {
         )}
 
         {/* Main Content */}
-        <main>
+        <main className={!currentUser ? 'landing-main' : ''}>
           <Routes>
             {/* Public Routes */}
             <Route 
@@ -161,11 +162,11 @@ function App() {
                     />
                     <Route 
                       path="/analytics" 
-                      element={<AnalyticsPage />} 
+                      element={<AnalyticsPage user={currentUser} />} 
                     />
                     <Route 
                       path="/education" 
-                      element={<EducationPage />} 
+                      element={<EducationPage user={currentUser} />} 
                     />
                     <Route 
                       path="/settings" 
@@ -178,7 +179,7 @@ function App() {
                     />
                     <Route 
                       path="/import" 
-                      element={<ImportPage />} 
+                      element={<ImportPage user={currentUser} />} 
                     />
                     <Route 
                       path="/gamification" 
@@ -186,7 +187,7 @@ function App() {
                     />
                     <Route 
                       path="/tools" 
-                      element={<ToolsPage />} 
+                      element={<ToolsPage user={currentUser} />} 
                     />
                     <Route 
                       path="/salary" 
@@ -207,7 +208,7 @@ function App() {
                     />
                     <Route 
                       path="/payment" 
-                      element={<PaymentPage />} 
+                      element={<PaymentPage user={currentUser} />} 
                     />
                     <Route path="*" element={<Navigate to="/dashboard" replace />} />
                   </Routes>

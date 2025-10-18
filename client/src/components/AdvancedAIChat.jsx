@@ -220,21 +220,38 @@ const AdvancedAIChat = ({ user, jarBalances, incomes, expenses }) => {
       }
 
       // Provide a graceful fallback AI reply so UX continues
-      const fallback = {
-        summary: "I'm having trouble reaching the AI service right now. Here's a quick tip while we fix it:",
-        nudges: [
-          { title: 'Jar Priorities', detail: 'Ensure 3-6 months of expenses in Emergency before investing.' },
-          { title: 'Expense Audit', detail: 'Review top-3 expense categories this week and set micro-budgets.' }
-        ],
-        insights: [
-          { type: 'Status', message: 'Temporary AI outage or invalid JSON from provider.' }
-        ]
-      };
+      const userMessage = userMsg.content.toLowerCase().trim();
+      const isGreeting = userMessage.includes('hi') || userMessage.includes('hello') || userMessage.includes('hey') || 
+                        userMessage.includes('good morning') || userMessage.includes('good afternoon') || 
+                        userMessage.includes('good evening') || userMessage.includes('greetings') || 
+                        userMessage.includes('how are you') || userMessage.includes('what\'s up') || 
+                        userMessage.includes('howdy');
+
+      let fallback;
+      if (isGreeting) {
+        const userName = user.name || 'there';
+        fallback = {
+          summary: `Hello ${userName}! 👋 I'm your SmartJar AI Financial Coach. I'm here to help you with your financial goals and decisions. How can I assist you today?`,
+          nudges: [],
+          insights: []
+        };
+      } else {
+        fallback = {
+          summary: "I'm experiencing a temporary connection issue, but I'm still here to help! Here's some helpful guidance:",
+          nudges: [
+            { title: 'Jar Priorities', detail: 'Ensure 3-6 months of expenses in Emergency before investing.' },
+            { title: 'Expense Audit', detail: 'Review top-3 expense categories this week and set micro-budgets.' }
+          ],
+          insights: [
+            { type: 'Status', message: 'Connection temporarily limited - please try again in a moment.' }
+          ]
+        };
+      }
 
       const errorMessage = {
         id: Date.now() + 1,
         type: 'ai',
-        content: `${fallback.summary}${serverError?.error ? ` (Details: ${serverError.error})` : ''}`,
+        content: fallback.summary,
         timestamp: new Date(),
         isError: true,
         insights: fallback.insights,
