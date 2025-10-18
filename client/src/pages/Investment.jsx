@@ -8,7 +8,7 @@ const InvestmentPage = ({ user }) => {
 
   return (
     <PageLayout
-      title="🎯 Investment Assistant"
+      title="Investment Assistant"
       subtitle="Get personalized investment recommendations"
       user={user}
     >
