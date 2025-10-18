@@ -31,46 +31,471 @@ const FinancialTools = () => {
   const onSipChange = (e) => setSip({ ...sip, [e.target.name]: Number(e.target.value) });
 
   return (
-    <div>
-      <div className="form-container">
-        <h2 className="form-title">Loan EMI Calculator</h2>
-        <div className="form-group">
-          <label className="form-label">Principal (₹)</label>
-          <input className="form-input" type="number" name="principal" value={loan.principal} onChange={onLoanChange} />
+    <div style={{
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))',
+      gap: '2rem',
+      padding: '0'
+    }}>
+      {/* Loan EMI Calculator */}
+      <div style={{
+        background: 'linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%)',
+        borderRadius: '16px',
+        padding: '2rem',
+        border: '1px solid #E0F2FE',
+        boxShadow: '0 4px 16px rgba(37, 99, 235, 0.08)',
+        transition: 'all 0.3s ease'
+      }}>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          marginBottom: '1.5rem',
+          gap: '0.75rem'
+        }}>
+          <div style={{
+            width: '40px',
+            height: '40px',
+            borderRadius: '10px',
+            background: 'linear-gradient(135deg, #2563EB 0%, #0EA5E9 100%)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'white',
+            fontSize: '1.2rem',
+            fontWeight: '700'
+          }}>
+            💰
+          </div>
+          <h2 style={{
+            margin: 0,
+            color: '#1F2937',
+            fontSize: '1.25rem',
+            fontWeight: '700',
+            letterSpacing: '-0.025em'
+          }}>
+            Loan EMI Calculator
+          </h2>
         </div>
-        <div className="form-group">
-          <label className="form-label">Annual Interest Rate (%)</label>
-          <input className="form-input" type="number" name="rate" value={loan.rate} onChange={onLoanChange} />
+
+        <div style={{ marginBottom: '1.5rem' }}>
+          <div style={{ marginBottom: '1rem' }}>
+            <label style={{
+              display: 'block',
+              fontWeight: '600',
+              color: '#374151',
+              marginBottom: '0.5rem',
+              fontSize: '0.875rem'
+            }}>
+              Principal Amount (₹)
+            </label>
+            <input 
+              style={{
+                width: '100%',
+                padding: '0.875rem 1rem',
+                border: '1.5px solid #E5E7EB',
+                borderRadius: '10px',
+                fontSize: '0.95rem',
+                transition: 'all 0.3s ease',
+                background: '#FFFFFF',
+                color: '#1F2937'
+              }}
+              type="number" 
+              name="principal" 
+              value={loan.principal} 
+              onChange={onLoanChange}
+              onFocus={(e) => {
+                e.target.style.borderColor = '#2563EB';
+                e.target.style.boxShadow = '0 0 0 3px rgba(37, 99, 235, 0.1)';
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = '#E5E7EB';
+                e.target.style.boxShadow = 'none';
+              }}
+            />
+          </div>
+          <div style={{ marginBottom: '1rem' }}>
+            <label style={{
+              display: 'block',
+              fontWeight: '600',
+              color: '#374151',
+              marginBottom: '0.5rem',
+              fontSize: '0.875rem'
+            }}>
+              Annual Interest Rate (%)
+            </label>
+            <input 
+              style={{
+                width: '100%',
+                padding: '0.875rem 1rem',
+                border: '1.5px solid #E5E7EB',
+                borderRadius: '10px',
+                fontSize: '0.95rem',
+                transition: 'all 0.3s ease',
+                background: '#FFFFFF',
+                color: '#1F2937'
+              }}
+              type="number" 
+              name="rate" 
+              value={loan.rate} 
+              onChange={onLoanChange}
+              onFocus={(e) => {
+                e.target.style.borderColor = '#2563EB';
+                e.target.style.boxShadow = '0 0 0 3px rgba(37, 99, 235, 0.1)';
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = '#E5E7EB';
+                e.target.style.boxShadow = 'none';
+              }}
+            />
+          </div>
+          <div style={{ marginBottom: '1rem' }}>
+            <label style={{
+              display: 'block',
+              fontWeight: '600',
+              color: '#374151',
+              marginBottom: '0.5rem',
+              fontSize: '0.875rem'
+            }}>
+              Loan Tenure (months)
+            </label>
+            <input 
+              style={{
+                width: '100%',
+                padding: '0.875rem 1rem',
+                border: '1.5px solid #E5E7EB',
+                borderRadius: '10px',
+                fontSize: '0.95rem',
+                transition: 'all 0.3s ease',
+                background: '#FFFFFF',
+                color: '#1F2937'
+              }}
+              type="number" 
+              name="months" 
+              value={loan.months} 
+              onChange={onLoanChange}
+              onFocus={(e) => {
+                e.target.style.borderColor = '#2563EB';
+                e.target.style.boxShadow = '0 0 0 3px rgba(37, 99, 235, 0.1)';
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = '#E5E7EB';
+                e.target.style.boxShadow = 'none';
+              }}
+            />
+          </div>
         </div>
-        <div className="form-group">
-          <label className="form-label">Tenure (months)</label>
-          <input className="form-input" type="number" name="months" value={loan.months} onChange={onLoanChange} />
-        </div>
-        <div className="stats-grid">
-          <div className="stat-card"><div className="stat-number">{formatCurrency(emiValue)}</div><div className="stat-label">EMI</div></div>
-          <div className="stat-card"><div className="stat-number">{formatCurrency(totalPayable)}</div><div className="stat-label">Total Payable</div></div>
-          <div className="stat-card"><div className="stat-number">{formatCurrency(totalInterest)}</div><div className="stat-label">Total Interest</div></div>
+
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
+          gap: '1rem'
+        }}>
+          <div style={{
+            background: 'linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%)',
+            padding: '1rem',
+            borderRadius: '10px',
+            border: '1px solid #BAE6FD',
+            textAlign: 'center'
+          }}>
+            <div style={{
+              fontSize: '1.1rem',
+              fontWeight: '700',
+              color: '#1E40AF',
+              marginBottom: '0.25rem'
+            }}>
+              {formatCurrency(emiValue)}
+            </div>
+            <div style={{
+              fontSize: '0.75rem',
+              fontWeight: '600',
+              color: '#0284C7',
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px'
+            }}>
+              EMI
+            </div>
+          </div>
+          <div style={{
+            background: 'linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%)',
+            padding: '1rem',
+            borderRadius: '10px',
+            border: '1px solid #BAE6FD',
+            textAlign: 'center'
+          }}>
+            <div style={{
+              fontSize: '1.1rem',
+              fontWeight: '700',
+              color: '#1E40AF',
+              marginBottom: '0.25rem'
+            }}>
+              {formatCurrency(totalPayable)}
+            </div>
+            <div style={{
+              fontSize: '0.75rem',
+              fontWeight: '600',
+              color: '#0284C7',
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px'
+            }}>
+              Total Payable
+            </div>
+          </div>
+          <div style={{
+            background: 'linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%)',
+            padding: '1rem',
+            borderRadius: '10px',
+            border: '1px solid #BAE6FD',
+            textAlign: 'center'
+          }}>
+            <div style={{
+              fontSize: '1.1rem',
+              fontWeight: '700',
+              color: '#1E40AF',
+              marginBottom: '0.25rem'
+            }}>
+              {formatCurrency(totalInterest)}
+            </div>
+            <div style={{
+              fontSize: '0.75rem',
+              fontWeight: '600',
+              color: '#0284C7',
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px'
+            }}>
+              Total Interest
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="form-container">
-        <h2 className="form-title">SIP Investment Calculator</h2>
-        <div className="form-group">
-          <label className="form-label">Monthly Investment (₹)</label>
-          <input className="form-input" type="number" name="monthly" value={sip.monthly} onChange={onSipChange} />
+      {/* SIP Investment Calculator */}
+      <div style={{
+        background: 'linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%)',
+        borderRadius: '16px',
+        padding: '2rem',
+        border: '1px solid #E0F2FE',
+        boxShadow: '0 4px 16px rgba(37, 99, 235, 0.08)',
+        transition: 'all 0.3s ease'
+      }}>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          marginBottom: '1.5rem',
+          gap: '0.75rem'
+        }}>
+          <div style={{
+            width: '40px',
+            height: '40px',
+            borderRadius: '10px',
+            background: 'linear-gradient(135deg, #2563EB 0%, #0EA5E9 100%)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'white',
+            fontSize: '1.2rem',
+            fontWeight: '700'
+          }}>
+            📈
+          </div>
+          <h2 style={{
+            margin: 0,
+            color: '#1F2937',
+            fontSize: '1.25rem',
+            fontWeight: '700',
+            letterSpacing: '-0.025em'
+          }}>
+            SIP Investment Calculator
+          </h2>
         </div>
-        <div className="form-group">
-          <label className="form-label">Expected Annual Return (%)</label>
-          <input className="form-input" type="number" name="rate" value={sip.rate} onChange={onSipChange} />
+
+        <div style={{ marginBottom: '1.5rem' }}>
+          <div style={{ marginBottom: '1rem' }}>
+            <label style={{
+              display: 'block',
+              fontWeight: '600',
+              color: '#374151',
+              marginBottom: '0.5rem',
+              fontSize: '0.875rem'
+            }}>
+              Monthly Investment (₹)
+            </label>
+            <input 
+              style={{
+                width: '100%',
+                padding: '0.875rem 1rem',
+                border: '1.5px solid #E5E7EB',
+                borderRadius: '10px',
+                fontSize: '0.95rem',
+                transition: 'all 0.3s ease',
+                background: '#FFFFFF',
+                color: '#1F2937'
+              }}
+              type="number" 
+              name="monthly" 
+              value={sip.monthly} 
+              onChange={onSipChange}
+              onFocus={(e) => {
+                e.target.style.borderColor = '#2563EB';
+                e.target.style.boxShadow = '0 0 0 3px rgba(37, 99, 235, 0.1)';
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = '#E5E7EB';
+                e.target.style.boxShadow = 'none';
+              }}
+            />
+          </div>
+          <div style={{ marginBottom: '1rem' }}>
+            <label style={{
+              display: 'block',
+              fontWeight: '600',
+              color: '#374151',
+              marginBottom: '0.5rem',
+              fontSize: '0.875rem'
+            }}>
+              Expected Annual Return (%)
+            </label>
+            <input 
+              style={{
+                width: '100%',
+                padding: '0.875rem 1rem',
+                border: '1.5px solid #E5E7EB',
+                borderRadius: '10px',
+                fontSize: '0.95rem',
+                transition: 'all 0.3s ease',
+                background: '#FFFFFF',
+                color: '#1F2937'
+              }}
+              type="number" 
+              name="rate" 
+              value={sip.rate} 
+              onChange={onSipChange}
+              onFocus={(e) => {
+                e.target.style.borderColor = '#2563EB';
+                e.target.style.boxShadow = '0 0 0 3px rgba(37, 99, 235, 0.1)';
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = '#E5E7EB';
+                e.target.style.boxShadow = 'none';
+              }}
+            />
+          </div>
+          <div style={{ marginBottom: '1rem' }}>
+            <label style={{
+              display: 'block',
+              fontWeight: '600',
+              color: '#374151',
+              marginBottom: '0.5rem',
+              fontSize: '0.875rem'
+            }}>
+              Investment Duration (years)
+            </label>
+            <input 
+              style={{
+                width: '100%',
+                padding: '0.875rem 1rem',
+                border: '1.5px solid #E5E7EB',
+                borderRadius: '10px',
+                fontSize: '0.95rem',
+                transition: 'all 0.3s ease',
+                background: '#FFFFFF',
+                color: '#1F2937'
+              }}
+              type="number" 
+              name="years" 
+              value={sip.years} 
+              onChange={onSipChange}
+              onFocus={(e) => {
+                e.target.style.borderColor = '#2563EB';
+                e.target.style.boxShadow = '0 0 0 3px rgba(37, 99, 235, 0.1)';
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = '#E5E7EB';
+                e.target.style.boxShadow = 'none';
+              }}
+            />
+          </div>
         </div>
-        <div className="form-group">
-          <label className="form-label">Duration (years)</label>
-          <input className="form-input" type="number" name="years" value={sip.years} onChange={onSipChange} />
-        </div>
-        <div className="stats-grid">
-          <div className="stat-card"><div className="stat-number">{formatCurrency(sipInvested)}</div><div className="stat-label">Total Invested</div></div>
-          <div className="stat-card"><div className="stat-number">{formatCurrency(sipValue)}</div><div className="stat-label">Future Value</div></div>
-          <div className="stat-card"><div className="stat-number">{formatCurrency(sipGain)}</div><div className="stat-label">Wealth Gain</div></div>
+
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
+          gap: '1rem'
+        }}>
+          <div style={{
+            background: 'linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%)',
+            padding: '1rem',
+            borderRadius: '10px',
+            border: '1px solid #BAE6FD',
+            textAlign: 'center'
+          }}>
+            <div style={{
+              fontSize: '1.1rem',
+              fontWeight: '700',
+              color: '#1E40AF',
+              marginBottom: '0.25rem'
+            }}>
+              {formatCurrency(sipInvested)}
+            </div>
+            <div style={{
+              fontSize: '0.75rem',
+              fontWeight: '600',
+              color: '#0284C7',
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px'
+            }}>
+              Total Invested
+            </div>
+          </div>
+          <div style={{
+            background: 'linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%)',
+            padding: '1rem',
+            borderRadius: '10px',
+            border: '1px solid #BAE6FD',
+            textAlign: 'center'
+          }}>
+            <div style={{
+              fontSize: '1.1rem',
+              fontWeight: '700',
+              color: '#1E40AF',
+              marginBottom: '0.25rem'
+            }}>
+              {formatCurrency(sipValue)}
+            </div>
+            <div style={{
+              fontSize: '0.75rem',
+              fontWeight: '600',
+              color: '#0284C7',
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px'
+            }}>
+              Future Value
+            </div>
+          </div>
+          <div style={{
+            background: 'linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%)',
+            padding: '1rem',
+            borderRadius: '10px',
+            border: '1px solid #BAE6FD',
+            textAlign: 'center'
+          }}>
+            <div style={{
+              fontSize: '1.1rem',
+              fontWeight: '700',
+              color: '#1E40AF',
+              marginBottom: '0.25rem'
+            }}>
+              {formatCurrency(sipGain)}
+            </div>
+            <div style={{
+              fontSize: '0.75rem',
+              fontWeight: '600',
+              color: '#0284C7',
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px'
+            }}>
+              Wealth Gain
+            </div>
+          </div>
         </div>
       </div>
     </div>
