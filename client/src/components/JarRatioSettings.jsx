@@ -778,28 +778,6 @@ const SettingsPage = () => {
       padding: '3rem 1rem'
     }}>
       <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
-        <div style={{
-          textAlign: 'center',
-          marginBottom: '2.5rem'
-        }}>
-          <h1 style={{
-            fontSize: '2.75rem',
-            fontWeight: '800',
-            color: '#111827',
-            marginBottom: '0.75rem',
-            letterSpacing: '-0.02em'
-          }}>
-            ⚙️ Settings
-          </h1>
-          <p style={{
-            fontSize: '1.125rem',
-            color: '#6b7280',
-            margin: 0,
-            fontWeight: '400'
-          }}>
-            Customize your jar allocation ratios and preferences
-          </p>
-        </div>
         <JarRatioSettings user={user} onRatiosUpdated={handleRatiosUpdated} />
       </div>
     </div>

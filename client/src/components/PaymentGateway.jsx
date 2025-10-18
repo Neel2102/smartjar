@@ -342,7 +342,6 @@ const PaymentGateway = ({ userId, onPaymentSuccess }) => {
   return (
     <div className="payment-gateway">
       <div className="payment-header">
-        <h2>🏦 SmartJar Payment Gateway</h2>
         <p>Deposit your daily earnings securely</p>
       </div>
 

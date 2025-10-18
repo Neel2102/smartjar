@@ -11,24 +11,24 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f7f8fa;
-  color: #111827;
+  background-color: var(--bg);
+  color: var(--text);
 }
 
 /* THEME VARIABLES */
 :root {
   /* Unified light theme */
-  --bg: #f7f8fa;
+  --bg: #f8fafc;
   --card: #ffffff;
-  --text: #111827;
+  --text: #1f2937;
   --muted: #6b7280;
-  --primary: #3366ff;
-  --primary-2: #2b57d9;
-  --surface: #f3f4f6;
-  --border: #e5e7eb;
-  --success: #16a34a;
+  --primary: #3b82f6;
+  --primary-2: #2563eb;
+  --surface: #f1f5f9;
+  --border: #e2e8f0;
+  --success: #10b981;
   --warning: #f59e0b;
-  --danger: #dc2626;
+  --danger: #ef4444;
 }
 
 /* Dark theme removed per request */
@@ -42,14 +42,23 @@ body, .App {
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 1.5rem;
+}
+
+/* Card styling improvements */
+.form-container, .dashboard, .investment-assistant, .salary-projection {
+  background: var(--card);
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border);
 }
 
 .header {
   background: #ffffff;
   color: var(--text);
-  padding: 0.75rem 0;
+  padding: 1rem 0;
   border-bottom: 1px solid var(--border);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .header-row {
@@ -59,16 +68,20 @@ body, .App {
 }
 
 .header h1 {
-  font-size: 2rem;
-  font-weight: 700;
+  font-size: 1.75rem;
+  font-weight: 600;
   text-align: center;
+  color: var(--text);
+  letter-spacing: -0.025em;
 }
 
 .header-subtitle {
   text-align: center;
   margin-top: 0.5rem;
-  opacity: 0.9;
-  font-size: 1rem;
+  opacity: 0.8;
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: var(--muted);
 }
 
 /* Sidebar Navigation */
@@ -291,6 +304,19 @@ body, .App {
     margin-left: 0;
     align-self: center;
   }
+  
+  .page-header {
+    margin: 0 0.5rem 2rem 0.5rem;
+    padding: 1.5rem 1rem;
+  }
+  
+  .page-header h1 {
+    font-size: 1.875rem;
+  }
+  
+  .page-header p {
+    font-size: 0.95rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -312,28 +338,41 @@ body, .App {
 .page {
   min-height: calc(100vh - 200px);
   padding: 2rem 0;
+  background: var(--bg);
+}
+
+.page .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
 }
 
 .page-header {
   text-align: center;
   margin-bottom: 3rem;
+  padding: 2rem 0;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(135deg, #fafbfc 0%, #f8fafc 100%);
+  border-radius: 12px;
+  margin: 0 1rem 3rem 1rem;
 }
 
 .page-header h1 {
-  font-size: 2.5rem;
+  font-size: 2.25rem;
+  font-weight: 600;
   color: var(--text);
-  margin-bottom: 0.5rem;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
 }
 
 .page-header p {
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: var(--muted);
-  max-width: 600px;
+  max-width: 500px;
   margin: 0 auto;
+  font-weight: 400;
+  line-height: 1.5;
 }
 
 /* Authentication Pages */

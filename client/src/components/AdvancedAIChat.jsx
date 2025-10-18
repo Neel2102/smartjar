@@ -314,7 +314,6 @@ const AdvancedAIChat = ({ user, jarBalances, incomes, expenses }) => {
   return (
     <div className="advanced-ai-chat">
       <div className="chat-header">
-        <h2>🤖 SmartJar AI Financial Coach</h2>
         <div className="chat-controls">
           <button 
             className="btn btn-secondary"

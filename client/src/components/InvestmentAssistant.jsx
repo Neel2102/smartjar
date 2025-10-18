@@ -180,7 +180,6 @@ const InvestmentAssistant = ({ user, jarBalances }) => {
     return (
       <div className="investment-assistant">
         <div className="setup-required">
-          <h2>🎯 Investment Assistant</h2>
           <p>Complete your investment profile in Settings to get personalized recommendations.</p>
         </div>
       </div>
@@ -189,8 +188,6 @@ const InvestmentAssistant = ({ user, jarBalances }) => {
 
   return (
     <div className="investment-assistant">
-      <h2>🎯 Investment Assistant</h2>
-      
       {/* Profile Summary */}
       <div className="profile-summary">
         <h3>Your Investment Profile</h3>

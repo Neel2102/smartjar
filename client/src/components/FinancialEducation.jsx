@@ -151,14 +151,6 @@ const FinancialEducation = () => {
   return (
     <div className="dashboard">
       <div className="container">
-        <h2 style={{ 
-          textAlign: 'center', 
-          marginBottom: '2rem', 
-          color: '#333',
-          fontSize: '2rem'
-        }}>
-          💡 Financial Education Center
-        </h2>
 
         {/* Tab Navigation */}
         <div style={{

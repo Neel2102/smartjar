@@ -120,8 +120,6 @@ const SalaryProjection = ({ userId, user }) => {
 
   return (
     <div className="salary-projection">
-      <h2>💰 Salary Projection System</h2>
-      
       <div className="eligibility-card" style={{ borderColor: eligibility.color }}>
         <div className="eligibility-header">
           <h3>Status: {eligibility.status}</h3>
