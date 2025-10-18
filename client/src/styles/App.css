@@ -17,18 +17,22 @@ body {
 
 /* THEME VARIABLES */
 :root {
-  /* Unified light theme */
-  --bg: #f8fafc;
+  /* Light blue and white theme - consistent across all pages */
+  --bg: #fafbfc;
   --card: #ffffff;
-  --text: #1f2937;
-  --muted: #6b7280;
-  --primary: #3b82f6;
-  --primary-2: #2563eb;
-  --surface: #f1f5f9;
+  --text: #1a202c;
+  --muted: #718096;
+  --primary: #3182ce;
+  --primary-2: #2c5aa0;
+  --primary-light: #ebf8ff;
+  --primary-lighter: #bee3f8;
+  --surface: #f7fafc;
   --border: #e2e8f0;
-  --success: #10b981;
-  --warning: #f59e0b;
-  --danger: #ef4444;
+  --accent: #ebf8ff;
+  --success: #38a169;
+  --warning: #d69e2e;
+  --danger: #e53e3e;
+  --info: #3182ce;
 }
 
 /* Dark theme removed per request */
@@ -51,14 +55,135 @@ body, .App {
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   border: 1px solid var(--border);
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Soft blue accent for important elements */
+.eligibility-card, .status-card {
+  background: var(--primary-light);
+  border: 1px solid var(--primary-lighter);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+/* Minimal button styling */
+.btn {
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+  border: 1px solid var(--primary);
+}
+
+.btn-primary:hover {
+  background: var(--primary-2);
+  border-color: var(--primary-2);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(49, 130, 206, 0.3);
+}
+
+.btn-secondary {
+  background: var(--primary-light);
+  color: var(--primary);
+  border: 1px solid var(--primary-lighter);
+}
+
+.btn-secondary:hover {
+  background: var(--primary-lighter);
+  color: var(--primary-2);
+}
+
+/* Form styling improvements */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  background: var(--card);
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+}
+
+/* Light blue info boxes */
+.info-box {
+  background: var(--primary-light);
+  border: 1px solid var(--primary-lighter);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.info-box h4 {
+  color: var(--primary);
+  margin: 0 0 0.5rem 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.info-box p {
+  color: var(--text);
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+/* Status indicators with light blue theme */
+.status-building {
+  background: #fff5f5;
+  border: 1px solid #fed7d7;
+  color: #c53030;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.status-eligible {
+  background: #f0fff4;
+  border: 1px solid #9ae6b4;
+  color: #2f855a;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.status-info {
+  background: var(--primary-light);
+  border: 1px solid var(--primary-lighter);
+  color: var(--primary);
+  border-radius: 8px;
+  padding: 1rem;
 }
 
 .header {
-  background: #ffffff;
+  background: var(--card);
   color: var(--text);
-  padding: 1rem 0;
+  padding: 1.25rem 0;
   border-bottom: 1px solid var(--border);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .header-row {
@@ -91,11 +216,12 @@ body, .App {
   left: 0;
   bottom: 0;
   width: 240px;
-  background: #ffffff;
+  background: var(--card);
   border-right: 1px solid var(--border);
   z-index: 200;
   display: flex;
   flex-direction: column;
+  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
 }
 .sidebar-header {
   display: flex;
@@ -311,6 +437,120 @@ body, .App {
   border-color: #FECACA;
 }
 
+/* Navigation link styling */
+.nav-link {
+  color: var(--muted);
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nav-link:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.nav-link.active {
+  background: var(--primary);
+  color: white;
+}
+
+/* Table styling with light blue theme */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--card);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.table th {
+  background: var(--primary-light);
+  color: var(--primary);
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.table td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.table tr:hover {
+  background: var(--surface);
+}
+
+/* Progress bars with light blue theme */
+.progress-bar {
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  height: 8px;
+}
+
+.progress-fill {
+  background: var(--primary);
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+/* Badge styling */
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.badge-primary {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.badge-success {
+  background: #f0fff4;
+  color: #2f855a;
+}
+
+.badge-warning {
+  background: #fffaf0;
+  color: #d69e2e;
+}
+
+/* Alert styling */
+.alert {
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  border: 1px solid;
+}
+
+.alert-info {
+  background: var(--primary-light);
+  border-color: var(--primary-lighter);
+  color: var(--primary);
+}
+
+.alert-success {
+  background: #f0fff4;
+  border-color: #9ae6b4;
+  color: #2f855a;
+}
+
+.alert-warning {
+  background: #fffaf0;
+  border-color: #fbd38d;
+  color: #d69e2e;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .nav-desktop {
@@ -333,15 +573,23 @@ body, .App {
   
   .page-header {
     margin: 0 0.5rem 2rem 0.5rem;
-    padding: 1.5rem 1rem;
+    padding: 2rem 1.5rem;
+    border-radius: 12px;
   }
   
   .page-header h1 {
     font-size: 1.875rem;
+    font-weight: 600;
   }
   
   .page-header p {
     font-size: 0.95rem;
+    color: var(--muted);
+  }
+  
+  .form-container, .dashboard, .investment-assistant, .salary-projection {
+    padding: 1.5rem;
+    border-radius: 12px;
   }
 }
 
@@ -376,11 +624,12 @@ body, .App {
 .page-header {
   text-align: center;
   margin-bottom: 3rem;
-  padding: 2rem 0;
-  border-bottom: 1px solid var(--border);
-  background: linear-gradient(135deg, #fafbfc 0%, #f8fafc 100%);
+  padding: 2.5rem 2rem;
+  background: var(--card);
   border-radius: 12px;
   margin: 0 1rem 3rem 1rem;
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .page-header h1 {

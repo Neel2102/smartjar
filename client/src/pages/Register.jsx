@@ -72,8 +72,8 @@ const Register = ({ onUserCreated }) => {
     <div className="auth-page">
       <div className="auth-container">
         <div className="auth-header">
-          <h1>Join SmartJar</h1>
-          <p>Create your account and start managing your finances</p>
+          <h1>Create Account</h1>
+          <p>Join SmartJar and start your financial journey</p>
         </div>
 
         <form onSubmit={handleSubmit} className="auth-form">
@@ -164,14 +164,21 @@ const Register = ({ onUserCreated }) => {
             className="btn btn-primary btn-full"
             disabled={loading || !formData.name || !formData.email || !formData.password}
           >
-            {loading ? 'Creating Account...' : 'Create Account'}
+            {loading ? (
+              <>
+                <span className="btn-loader"></span>
+                Creating Account...
+              </>
+            ) : (
+              'Create Account'
+            )}
           </button>
 
           <div className="auth-footer">
             <p>
               Already have an account? 
               <Link to="/login" className="auth-link">
-                Sign in here
+                Sign in
               </Link>
             </p>
           </div>

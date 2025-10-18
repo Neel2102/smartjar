@@ -46,19 +46,19 @@ const Login = ({ onUserLogin }) => {
     <div className="auth-page">
       <div className="auth-container">
         <div className="auth-header">
-          <h1>Welcome Back</h1>
-          <p>Sign in to your SmartJar account</p>
+          <h1>Sign in to SmartJar</h1>
+          <p>Welcome back. Please enter your details.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
-            <label htmlFor="email">Email Address</label>
+            <label htmlFor="email">Email</label>
             <input
               id="email"
               type="email"
               value={formData.email}
               onChange={(e) => updateFormData('email', e.target.value)}
-              placeholder="Enter your email"
+              placeholder="you@example.com"
               required
             />
           </div>
@@ -75,6 +75,10 @@ const Login = ({ onUserLogin }) => {
             />
           </div>
 
+          <div className="forgot-password">
+            <a href="#" onClick={(e) => e.preventDefault()}>Forgot password?</a>
+          </div>
+
           {error && (
             <div className="error-message">
               {error}
@@ -86,14 +90,21 @@ const Login = ({ onUserLogin }) => {
             className="btn btn-primary btn-full"
             disabled={loading || !formData.email || !formData.password}
           >
-            {loading ? 'Signing In...' : 'Sign In'}
+            {loading ? (
+              <>
+                <span className="btn-loader"></span>
+                Signing In...
+              </>
+            ) : (
+              'Sign In'
+            )}
           </button>
 
           <div className="auth-footer">
             <p>
-              Don't have an account? 
+              New to SmartJar? 
               <Link to="/register" className="auth-link">
-                Create one here
+                Create an account
               </Link>
             </p>
           </div>
