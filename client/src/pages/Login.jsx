@@ -1,15 +1,12 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { userAPI } from '../services/api';
-import '../styles/LoginRegister.css';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { userAPI } from "../services/api";
+import "../styles/Login.css";
 
 const Login = ({ onUserLogin }) => {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  });
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
@@ -17,46 +14,46 @@ const Login = ({ onUserLogin }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
       const response = await userAPI.getAll();
-      const user = response.data.find(u => u.email === formData.email);
-      
+      const user = response.data.find((u) => u.email === formData.email);
+
       if (user) {
         onUserLogin(user);
-        navigate('/dashboard');
+        navigate("/dashboard");
       } else {
-        setError('User not found. Please check your email or register first.');
+        setError("User not found. Please check your email or register first.");
       }
     } catch (err) {
-      console.error('Login error:', err);
-      setError('Login failed. Please try again.');
+      console.error("Login error:", err);
+      setError("Login failed. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  const updateFormData = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
+  const updateFormData = (field, value) =>
+    setFormData((prev) => ({ ...prev, [field]: value }));
 
   return (
-    <div className="auth-page">
-      <div className="auth-container">
-        <div className="auth-header">
-          <h1>Sign in to SmartJar</h1>
-          <p>Welcome back. Please enter your details.</p>
+    <div className="login-page">
+      <div className="login-container">
+        <div className="login-header">
+          <h2 className="brand-title">SmartJar</h2>
+          <h1>Welcome Back</h1>
+          <p>Please sign in to continue</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="auth-form">
+        <form onSubmit={handleSubmit} className="login-form">
           <div className="form-group">
             <label htmlFor="email">Email</label>
             <input
               id="email"
               type="email"
               value={formData.email}
-              onChange={(e) => updateFormData('email', e.target.value)}
+              onChange={(e) => updateFormData("email", e.target.value)}
               placeholder="you@example.com"
               required
             />
@@ -68,40 +65,37 @@ const Login = ({ onUserLogin }) => {
               id="password"
               type={showPassword ? "text" : "password"}
               value={formData.password}
-              onChange={(e) => updateFormData('password', e.target.value)}
+              onChange={(e) => updateFormData("password", e.target.value)}
               placeholder="Enter your password"
               required
             />
           </div>
 
           <div className="forgot-password">
-            <a href="#" onClick={(e) => e.preventDefault()}>Forgot password?</a>
+            <a href="#" onClick={(e) => e.preventDefault()}>
+              Forgot password?
+            </a>
           </div>
 
-          {error && (
-            <div className="error-message">
-              {error}
-            </div>
-          )}
+          {error && <div className="error-message">{error}</div>}
 
-          <button 
-            type="submit" 
-            className="btn btn-primary btn-full"
+          <button
+            type="submit"
+            className="btn-primary"
             disabled={loading || !formData.email || !formData.password}
           >
             {loading ? (
               <>
-                <span className="btn-loader"></span>
-                Signing In...
+                <span className="btn-loader"></span> Signing In...
               </>
             ) : (
-              'Sign In'
+              "Sign In"
             )}
           </button>
 
-          <div className="auth-footer">
+          <div className="login-footer">
             <p>
-              New to SmartJar? 
+              New to SmartJar?{" "}
               <Link to="/register" className="auth-link">
                 Create an account
               </Link>
