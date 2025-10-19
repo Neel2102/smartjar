@@ -219,3 +219,39 @@
     font-size: 1.5rem;
   }
 }
+
+/* Brand title for Register page */
+.brand-title {
+  font-size: 2.2rem; /* slightly bigger than h1 */
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 1rem;
+  letter-spacing: -0.5px;
+}
+
+/* Adjust Create Account header color */
+.login-header h1 {
+  color: var(--text); /* black-ish */
+}
+
+/* Adjust spacing for form groups in register page */
+.login-form .form-group {
+  margin-bottom: 1.5rem;
+}
+
+/* Ensure footer link matches theme */
+.login-footer {
+  text-align: center;
+  margin-top: 1rem;
+  color: var(--muted);
+}
+
+.auth-link {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.auth-link:hover {
+  text-decoration: underline;
+}
