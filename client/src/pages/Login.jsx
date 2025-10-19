@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { userAPI } from '../services/api';
-import '../styles/Auth.css';
+import '../styles/LoginRegister.css';
 
 const Login = ({ onUserLogin }) => {
   const [formData, setFormData] = useState({
