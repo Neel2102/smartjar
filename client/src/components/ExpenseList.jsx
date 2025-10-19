@@ -62,29 +62,31 @@ const ExpenseList = ({ expenses }) => {
         ))}
       </div>
 
-      {totalPages > 1 && (
-        <div className="pagination-container">
-          <div className="pagination-info">
-            Page {currentPage} of {totalPages}
-          </div>
-          <div className="pagination-controls">
-            <button 
-              className="pagination-btn" 
-              onClick={handlePrevious}
-              disabled={currentPage === 1}
-            >
-              Previous
-            </button>
-            <button 
-              className="pagination-btn" 
-              onClick={handleNext}
-              disabled={currentPage === totalPages}
-            >
-              Next
-            </button>
-          </div>
-        </div>
-      )}
+      <div className="pagination-container">
+        {totalPages > 1 && (
+          <>
+            <div className="pagination-info">
+              Page {currentPage} of {totalPages}
+            </div>
+            <div className="pagination-controls">
+              <button 
+                className="pagination-btn" 
+                onClick={handlePrevious}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </button>
+              <button 
+                className="pagination-btn" 
+                onClick={handleNext}
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </button>
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 };

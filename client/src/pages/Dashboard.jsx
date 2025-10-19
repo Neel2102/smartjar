@@ -169,14 +169,27 @@ const Dashboard = ({ userId, user, onUserUpdated }) => {
           />
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '2rem' }}>
-          <IncomeForm onIncomeAdded={handleIncomeAdded} userId={userId} />
-          <ExpenseForm onExpenseAdded={handleExpenseAdded} userId={userId} jarBalances={jarBalances} />
-        </div>
-
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
-          <IncomeList incomes={incomes} />
-          <ExpenseList expenses={expenses} />
+        {/* New 2x2 Grid Layout for Income & Expenses */}
+        <div className="dashboard-grid">
+          {/* Top Row */}
+          <div className="dashboard-row">
+            <div className="dashboard-card income-form-card">
+              <IncomeForm onIncomeAdded={handleIncomeAdded} userId={userId} />
+            </div>
+            <div className="dashboard-card income-history-card">
+              <IncomeList incomes={incomes} />
+            </div>
+          </div>
+          
+          {/* Bottom Row */}
+          <div className="dashboard-row">
+            <div className="dashboard-card expense-form-card">
+              <ExpenseForm onExpenseAdded={handleExpenseAdded} userId={userId} jarBalances={jarBalances} />
+            </div>
+            <div className="dashboard-card expense-history-card">
+              <ExpenseList expenses={expenses} />
+            </div>
+          </div>
         </div>
     </PageLayout>
   );
