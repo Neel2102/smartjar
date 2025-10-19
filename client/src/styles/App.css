@@ -79,27 +79,31 @@ body, .App {
 }
 
 .btn-primary {
-  background: var(--primary);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 100%);
   color: white;
   border: 1px solid var(--primary);
+  box-shadow: 0 2px 8px rgba(7, 47, 85, 0.3);
 }
 
 .btn-primary:hover {
-  background: var(--primary-2);
+  background: linear-gradient(135deg, var(--primary-2) 0%, var(--primary) 100%);
   border-color: var(--primary-2);
   transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(49, 130, 206, 0.3);
+  box-shadow: 0 4px 12px rgba(7, 47, 85, 0.4);
 }
 
 .btn-secondary {
   background: var(--primary-light);
   color: var(--primary);
   border: 1px solid var(--primary-lighter);
+  box-shadow: 0 1px 3px rgba(7, 47, 85, 0.1);
 }
 
 .btn-secondary:hover {
   background: var(--primary-lighter);
   color: var(--primary-2);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(7, 47, 85, 0.2);
 }
 
 /* Form styling improvements */
@@ -128,7 +132,7 @@ body, .App {
 .form-control:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+  box-shadow: 0 0 0 3px rgba(7, 47, 85, 0.1);
 }
 
 /* Light blue info boxes */
@@ -590,6 +594,22 @@ body, .App {
   .form-container, .dashboard, .investment-assistant, .salary-projection {
     padding: 1.5rem;
     border-radius: 12px;
+  }
+
+  /* Mobile responsive adjustments for history containers */
+  .income-list-container, .expense-list-container {
+    height: auto; /* Allow height to adjust on mobile for readability */
+    min-height: 300px;
+  }
+
+  .pagination-container {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .pagination-controls {
+    justify-content: center;
   }
 }
 
@@ -1216,11 +1236,13 @@ input[type="range"]:focus {
   cursor: pointer;
   transition: all 0.3s ease;
   width: 100%;
+  box-shadow: 0 2px 8px rgba(7, 47, 85, 0.3);
 }
 
 .btn:hover {
+  background: linear-gradient(135deg, var(--primary-2) 0%, var(--primary) 100%);
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 5px 15px rgba(7, 47, 85, 0.4);
 }
 
 .btn:disabled {
@@ -1229,44 +1251,125 @@ input[type="range"]:focus {
   transform: none;
 }
 
-/* Income list */
-.income-list {
+/* Income and Expense list containers with fixed height */
+.income-list-container, .expense-list-container {
   background: var(--card);
   border-radius: 15px;
   padding: 2rem;
   box-shadow: 0 5px 15px rgba(0,0,0,0.1);
   margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  height: 400px; /* Fixed height to match form containers */
 }
 
-.income-item {
+.income-list-content, .expense-list-content {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.income-list-content::-webkit-scrollbar, .expense-list-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.income-list-content::-webkit-scrollbar-track, .expense-list-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.income-list-content::-webkit-scrollbar-thumb, .expense-list-content::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.income-list-content::-webkit-scrollbar-thumb:hover, .expense-list-content::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+.income-item, .expense-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
   border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.2s ease;
 }
 
-.income-item:last-child {
+.income-item:hover, .expense-item:hover {
+  background-color: #f8f9fa;
+}
+
+.income-item:last-child, .expense-item:last-child {
   border-bottom: none;
 }
 
-.income-amount {
+.income-amount, .expense-amount {
   font-weight: 600;
   font-size: 1.1rem;
 }
 
-.income-date {
+.income-date, .expense-date {
   color: #666;
   font-size: 0.9rem;
 }
 
-.income-source {
+.income-source, .expense-category {
   background: #e3f2fd;
   color: #1976d2;
   padding: 0.25rem 0.75rem;
   border-radius: 20px;
   font-size: 0.8rem;
   font-weight: 500;
+}
+
+/* Pagination styles */
+.pagination-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid #f0f0f0;
+  margin-top: auto;
+}
+
+.pagination-info {
+  color: #666;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.pagination-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.pagination-btn {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 100%);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(7, 47, 85, 0.2);
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--primary-2) 0%, var(--primary) 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(7, 47, 85, 0.3);
+}
+
+.pagination-btn:disabled {
+  background: #e0e0e0;
+  color: #999;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 /* Stats and charts */
@@ -1318,16 +1421,18 @@ input[type="range"]:focus {
   font-weight: 600;
   transition: all 0.3s ease;
   font-size: 0.9rem;
+  box-shadow: 0 1px 3px rgba(7, 47, 85, 0.1);
 }
 
 .tab-button.active {
-  background: var(--primary);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 100%);
   color: white;
+  box-shadow: 0 2px 8px rgba(7, 47, 85, 0.3);
 }
 
 .tab-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+  box-shadow: 0 5px 15px rgba(7, 47, 85, 0.2);
 }
 
 /* Enhanced Onboarding Styles */
@@ -1791,7 +1896,7 @@ input[type="range"]:focus {
 }
 
 .instrument-icon {
-  font-size: 2.5rem;
+  font-size: 1rem;
 }
 
 .instrument-info h4 {
@@ -1889,7 +1994,7 @@ input[type="range"]:focus {
 }
 
 .partner-logo {
-  font-size: 2.5rem;
+  font-size: 1rem;
 }
 
 .partner-name {
@@ -1922,7 +2027,7 @@ input[type="range"]:focus {
 }
 
 .tip-icon {
-  font-size: 3rem;
+  font-size: 1rem;
   margin-bottom: 1rem;
 }
 

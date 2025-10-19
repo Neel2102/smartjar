@@ -10,6 +10,7 @@ const Login = ({ onUserLogin }) => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
 
@@ -19,8 +20,6 @@ const Login = ({ onUserLogin }) => {
     setError('');
 
     try {
-      // For now, we'll use a simple email-based login
-      // In a real app, you'd have proper authentication
       const response = await userAPI.getAll();
       const user = response.data.find(u => u.email === formData.email);
       
@@ -67,7 +66,7 @@ const Login = ({ onUserLogin }) => {
             <label htmlFor="password">Password</label>
             <input
               id="password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               value={formData.password}
               onChange={(e) => updateFormData('password', e.target.value)}
               placeholder="Enter your password"

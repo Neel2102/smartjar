@@ -14,6 +14,8 @@ const Register = ({ onUserCreated }) => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const navigate = useNavigate();
 
@@ -42,7 +44,6 @@ const Register = ({ onUserCreated }) => {
         email: formData.email,
         phone: formData.phone,
         location: formData.location,
-        // Set default values for new users
         jarRatios: { salary: 60, emergency: 25, future: 15 },
         monthlyIncomeTarget: 0,
         emergencyFundTarget: 0,
@@ -132,7 +133,7 @@ const Register = ({ onUserCreated }) => {
               <label htmlFor="password">Password</label>
               <input
                 id="password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 value={formData.password}
                 onChange={(e) => updateFormData('password', e.target.value)}
                 placeholder="Create a password"
@@ -144,7 +145,7 @@ const Register = ({ onUserCreated }) => {
               <label htmlFor="confirmPassword">Confirm Password</label>
               <input
                 id="confirmPassword"
-                type="password"
+                type={showConfirmPassword ? "text" : "password"}
                 value={formData.confirmPassword}
                 onChange={(e) => updateFormData('confirmPassword', e.target.value)}
                 placeholder="Confirm your password"

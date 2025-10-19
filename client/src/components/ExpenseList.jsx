@@ -1,32 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { formatCurrency, formatDate } from '../utils/formatters';
 
-const IncomeList = ({ incomes }) => {
+const ExpenseList = ({ expenses }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [entriesPerPage] = useState(5); // Adjust based on container height
 
-  // Reset to first page when incomes change
+  // Reset to first page when expenses change
   useEffect(() => {
     setCurrentPage(1);
-  }, [incomes]);
+  }, [expenses]);
 
-  if (!incomes || incomes.length === 0) {
+  if (!expenses || expenses.length === 0) {
     return (
-      <div className="income-list-container">
-        <h3 style={{ marginBottom: '1.5rem', color: '#333' }}>Income History</h3>
-        <div className="income-list-content">
+      <div className="expense-list-container">
+        <h3 style={{ marginBottom: '1.5rem', color: '#333' }}>Expense History</h3>
+        <div className="expense-list-content">
           <div style={{ textAlign: 'center', color: '#666', padding: '2rem' }}>
-            No income entries yet. Add your first income to get started!
+            No expenses recorded yet.
           </div>
         </div>
       </div>
     );
   }
 
-  const totalPages = Math.ceil(incomes.length / entriesPerPage);
+  const totalPages = Math.ceil(expenses.length / entriesPerPage);
   const startIndex = (currentPage - 1) * entriesPerPage;
   const endIndex = startIndex + entriesPerPage;
-  const currentIncomes = incomes.slice(startIndex, endIndex);
+  const currentExpenses = expenses.slice(startIndex, endIndex);
 
   const handlePrevious = () => {
     setCurrentPage(prev => Math.max(prev - 1, 1));
@@ -37,27 +37,25 @@ const IncomeList = ({ incomes }) => {
   };
 
   return (
-    <div className="income-list-container">
-      <h3 style={{ marginBottom: '1.5rem', color: '#333' }}>Income History</h3>
+    <div className="expense-list-container">
+      <h3 style={{ marginBottom: '1.5rem', color: '#333' }}>Expense History</h3>
       
-      <div className="income-list-content">
-        {currentIncomes.map((income) => (
-          <div key={income._id} className="income-item">
+      <div className="expense-list-content">
+        {currentExpenses.map((expense) => (
+          <div key={expense._id} className="expense-item">
             <div>
-              <div className="income-amount">{formatCurrency(income.amount)}</div>
-              <div className="income-date">{formatDate(income.receivedAt)}</div>
+              <div className="expense-amount">{formatCurrency(expense.amount)}</div>
+              <div className="expense-date">{formatDate(expense.date)}</div>
             </div>
             
             <div style={{ textAlign: 'right' }}>
-              <div className="income-source">
-                {income.source.charAt(0).toUpperCase() + income.source.slice(1)}
-              </div>
+              <div className="expense-category">{expense.category}</div>
               <div style={{ 
                 fontSize: '0.8rem', 
                 color: '#666', 
                 marginTop: '0.25rem' 
               }}>
-                {formatCurrency(income.allocations.salary)} • {formatCurrency(income.allocations.emergency)} • {formatCurrency(income.allocations.future)}
+                {expense.type} • {expense.jarSource}
               </div>
             </div>
           </div>
@@ -91,4 +89,4 @@ const IncomeList = ({ incomes }) => {
   );
 };
 
-export default IncomeList;
+export default ExpenseList;

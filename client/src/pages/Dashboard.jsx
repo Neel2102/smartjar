@@ -3,6 +3,7 @@ import JarCard from '../components/JarCard';
 import IncomeForm from '../components/IncomeForm';
 import IncomeList from '../components/IncomeList';
 import ExpenseForm from '../components/ExpenseForm';
+import ExpenseList from '../components/ExpenseList';
 import FinancialHealthScore from '../components/FinancialHealthScore';
 // Removed per simplified dashboard; these features are accessible via top navigation routes
 import ProgressRing from '../components/ProgressRing';
@@ -175,29 +176,7 @@ const Dashboard = ({ userId, user, onUserUpdated }) => {
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
           <IncomeList incomes={incomes} />
-          <div className="income-list">
-            <h3 style={{ marginBottom: '1.5rem', color: '#333' }}>Expense History</h3>
-            {expenses.length === 0 ? (
-              <div style={{ textAlign: 'center', color: '#666' }}>
-                No expenses recorded yet.
-              </div>
-            ) : (
-              expenses.slice(0, 5).map((expense) => (
-                <div key={expense._id} className="income-item">
-                  <div>
-                    <div className="income-amount">{formatCurrency(expense.amount)}</div>
-                    <div className="income-date">{new Date(expense.date).toLocaleDateString()}</div>
-                  </div>
-                  <div style={{ textAlign: 'right' }}>
-                    <div className="income-source">{expense.category}</div>
-                    <div style={{ fontSize: '0.8rem', color: '#666', marginTop: '0.25rem' }}>
-                      {expense.type} • {expense.jarSource}
-                    </div>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
+          <ExpenseList expenses={expenses} />
         </div>
     </PageLayout>
   );
