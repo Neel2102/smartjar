@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BanknotesIcon } from '@heroicons/react/24/outline';
 import Dashboard from './pages/Dashboard';
 import UserSetup from './pages/UserSetup';
 import Login from './pages/Login';
@@ -76,7 +77,9 @@ function App() {
         fontSize: '1.2rem'
       }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🏦</div>
+          <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'center' }}>
+            <BanknotesIcon style={{ width: 40, height: 40 }} aria-hidden />
+          </div>
           <div>Loading SmartJar...</div>
         </div>
       </div>

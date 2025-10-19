@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { userAPI } from "../services/api";
 import "../styles/Login.css";
+import Logo from "../components/Logo";
 
 const Login = ({ onUserLogin }) => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -41,7 +42,9 @@ const Login = ({ onUserLogin }) => {
     <div className="login-page">
       <div className="login-container">
         <div className="login-header">
-          <h2 className="brand-title">SmartJar</h2>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.5rem' }}>
+            <Logo size={32} showText={true} />
+          </div>
           <h1>Welcome Back</h1>
           <p>Please sign in to continue</p>
         </div>

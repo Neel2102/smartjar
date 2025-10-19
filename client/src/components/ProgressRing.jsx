@@ -2,7 +2,7 @@ import React from 'react';
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
-const ProgressRing = ({ size = 140, stroke = 10, current = 0, target = 0, label = 'Emergency Fund', sublabel, color = '#4CAF50' }) => {
+const ProgressRing = ({ size = 140, stroke = 10, current = 0, target = 0, label = 'Emergency Fund', sublabel, color = 'var(--primary)' }) => {
   const radius = (size - stroke) / 2;
   const circumference = 2 * Math.PI * radius;
   const pct = target > 0 ? clamp(current / target, 0, 1) : 0;
@@ -20,7 +20,7 @@ const ProgressRing = ({ size = 140, stroke = 10, current = 0, target = 0, label 
             cx={size / 2}
             cy={size / 2}
             r={radius}
-            stroke="#e6e6e6"
+            stroke="var(--border)"
             strokeWidth={stroke}
             fill="none"
           />
@@ -36,15 +36,15 @@ const ProgressRing = ({ size = 140, stroke = 10, current = 0, target = 0, label 
             style={{ transition: 'stroke-dasharray 800ms ease' }}
           />
         </g>
-        <text x="50%" y="50%" dominantBaseline="middle" textAnchor="middle" style={{ fontSize: size * 0.18, fontWeight: 700, fill: '#333' }}>
+        <text x="50%" y="50%" dominantBaseline="middle" textAnchor="middle" style={{ fontSize: size * 0.18, fontWeight: 700, fill: 'var(--text)' }}>
           {percentText}
         </text>
       </svg>
       <div>
         <div style={{ fontWeight: 700, marginBottom: '0.25rem' }}>{label}</div>
-        <div style={{ color: '#666', fontSize: '0.9rem' }}>{subtitle}</div>
+        <div style={{ color: 'var(--muted)', fontSize: '0.9rem' }}>{subtitle}</div>
         {target > 0 && (
-          <div style={{ color: '#666', fontSize: '0.9rem', marginTop: '0.25rem' }}>
+          <div style={{ color: 'var(--muted)', fontSize: '0.9rem', marginTop: '0.25rem' }}>
             ₹{Math.round(current).toLocaleString()} / ₹{Math.round(target).toLocaleString()}
           </div>
         )}

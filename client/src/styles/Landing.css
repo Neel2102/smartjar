@@ -89,8 +89,9 @@ body {
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 100%);
-  color: white;
+  background: var(--bg-primary);
+  color: var(--primary);
+  border: 2px solid var(--primary);
   font-size: 20px;
   font-weight: 700;
   margin: 0 auto var(--spacing-xl);
@@ -294,6 +295,9 @@ body {
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  background: var(--bg-primary);
+  color: var(--primary);
+  border: 1px solid var(--primary);
 }
 
 .feature-icon::before {
@@ -316,18 +320,21 @@ body {
 }
 
 .blue-gradient {
-  background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-lighter) 100%);
+  background: var(--bg-primary);
   color: var(--primary);
+  border: 1px solid var(--primary);
 }
 
 .purple-gradient {
-  background: linear-gradient(135deg, var(--secondary-light) 0%, var(--primary-light) 100%);
+  background: var(--bg-primary);
   color: var(--primary);
+  border: 1px solid var(--primary);
 }
 
 .indigo-gradient {
-  background: linear-gradient(135deg, var(--primary-lighter) 0%, var(--secondary-light) 100%);
+  background: var(--bg-primary);
   color: var(--primary);
+  border: 1px solid var(--primary);
 }
 
 .feature-title {

@@ -1,6 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/Landing.css';
+import Logo from '../components/Logo';
+import {
+  BriefcaseIcon,
+  SparklesIcon,
+  ChartBarIcon,
+  ArrowTrendingUpIcon,
+  TrophyIcon,
+  DevicePhoneMobileIcon
+} from '@heroicons/react/24/outline';
 
 const Landing = () => {
   return (
@@ -8,7 +17,9 @@ const Landing = () => {
       {/* Hero Section */}
       <section className="hero-section">
         <div className="hero-content">
-          <div className="hero-icon" aria-hidden="true">SJ</div>
+          <div className="hero-icon" aria-hidden="true">
+            <Logo size={48} />
+          </div>
           <h1 className="hero-title">SmartJar</h1>
           <h2 className="hero-subtitle">Financial stability for every gig worker</h2>
           <p className="hero-description">
@@ -29,32 +40,44 @@ const Landing = () => {
         </div>
         <div className="features-grid">
           <div className="feature-card">
-            <div className="feature-icon blue-gradient">💼</div>
+            <div className="feature-icon blue-gradient" aria-hidden>
+              <BriefcaseIcon style={{ width: 20, height: 20 }} />
+            </div>
             <div className="feature-title">Smart Jar System</div>
             <div className="feature-description">Automatic 60/25/15 split for Salary, Emergency, and Future goals.</div>
           </div>
           <div className="feature-card">
-            <div className="feature-icon purple-gradient">🤖</div>
+            <div className="feature-icon purple-gradient" aria-hidden>
+              <SparklesIcon style={{ width: 20, height: 20 }} />
+            </div>
             <div className="feature-title">AI Financial Coach</div>
             <div className="feature-description">Context-aware guidance, nudges, and quick actions tailored to you.</div>
           </div>
           <div className="feature-card">
-            <div className="feature-icon indigo-gradient">📊</div>
+            <div className="feature-icon indigo-gradient" aria-hidden>
+              <ChartBarIcon style={{ width: 20, height: 20 }} />
+            </div>
             <div className="feature-title">Clear Analytics</div>
             <div className="feature-description">Understand trends, track progress, and celebrate milestones.</div>
           </div>
           <div className="feature-card">
-            <div className="feature-icon blue-gradient">🎯</div>
+            <div className="feature-icon blue-gradient" aria-hidden>
+              <ArrowTrendingUpIcon style={{ width: 20, height: 20 }} />
+            </div>
             <div className="feature-title">Goal-first Planning</div>
             <div className="feature-description">Define targets; SmartJar helps you reach them steadily.</div>
           </div>
           <div className="feature-card">
-            <div className="feature-icon purple-gradient">🏅</div>
+            <div className="feature-icon purple-gradient" aria-hidden>
+              <TrophyIcon style={{ width: 20, height: 20 }} />
+            </div>
             <div className="feature-title">Motivating Rewards</div>
             <div className="feature-description">Badges and streaks designed to keep you consistent.</div>
           </div>
           <div className="feature-card">
-            <div className="feature-icon indigo-gradient">📱</div>
+            <div className="feature-icon indigo-gradient" aria-hidden>
+              <DevicePhoneMobileIcon style={{ width: 20, height: 20 }} />
+            </div>
             <div className="feature-title">Anytime, Anywhere</div>
             <div className="feature-description">Mobile-friendly experience for quick updates on the go.</div>
           </div>

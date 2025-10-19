@@ -1,6 +1,21 @@
 import React, { useState } from 'react';
 import { incomeAPI } from '../services/api';
 import { formatCurrency } from '../utils/formatters';
+import {
+  BanknotesIcon,
+  BuildingStorefrontIcon,
+  TruckIcon,
+  WrenchScrewdriverIcon,
+  DevicePhoneMobileIcon,
+  BuildingLibraryIcon,
+  WalletIcon,
+  CurrencyRupeeIcon,
+  ChevronRightIcon,
+  CheckCircleIcon,
+  ShieldCheckIcon,
+  RocketLaunchIcon,
+  InformationCircleIcon
+} from '@heroicons/react/24/outline';
 
 const PaymentGateway = ({ userId, onPaymentSuccess }) => {
   const [paymentData, setPaymentData] = useState({
@@ -18,21 +33,58 @@ const PaymentGateway = ({ userId, onPaymentSuccess }) => {
   const [error, setError] = useState('');
 
   const platforms = [
-    { key: 'swiggy', name: 'Swiggy', icon: '🛵' },
-    { key: 'zomato', name: 'Zomato', icon: '🍕' },
-    { key: 'uber', name: 'Uber', icon: '🚗' },
-    { key: 'rapido', name: 'Rapido', icon: '🏍️' },
-    { key: 'ola', name: 'Ola', icon: '🚙' },
-    { key: 'dunzo', name: 'Dunzo', icon: '📦' },
-    { key: 'other', name: 'Other', icon: '🔧' }
+    { key: 'swiggy', name: 'Swiggy' },
+    { key: 'zomato', name: 'Zomato' },
+    { key: 'uber', name: 'Uber' },
+    { key: 'rapido', name: 'Rapido' },
+    { key: 'ola', name: 'Ola' },
+    { key: 'dunzo', name: 'Dunzo' },
+    { key: 'other', name: 'Other' }
   ];
 
   const paymentMethods = [
-    { key: 'upi', name: 'UPI Transfer', icon: '📱', description: 'Instant transfer via UPI ID' },
-    { key: 'bank_transfer', name: 'Bank Transfer', icon: '🏦', description: 'Direct bank account transfer' },
-    { key: 'wallet', name: 'Wallet Credit', icon: '💳', description: 'Credit to SmartJar wallet' },
-    { key: 'cash', name: 'Cash Entry', icon: '💵', description: 'Manual entry for cash earnings' }
+    { key: 'upi', name: 'UPI Transfer', description: 'Instant transfer via UPI ID' },
+    { key: 'bank_transfer', name: 'Bank Transfer', description: 'Direct bank account transfer' },
+    { key: 'wallet', name: 'Wallet Credit', description: 'Credit to SmartJar wallet' },
+    { key: 'cash', name: 'Cash Entry', description: 'Manual entry for cash earnings' }
   ];
+
+  const PlatformIcon = ({ name }) => {
+    const style = { width: 18, height: 18 };
+    const props = { style, 'aria-hidden': true };
+    switch (name) {
+      case 'swiggy':
+      case 'zomato':
+        return <BuildingStorefrontIcon {...props} />;
+      case 'uber':
+      case 'rapido':
+      case 'ola':
+        return <TruckIcon {...props} />;
+      case 'dunzo':
+        return <WalletIcon {...props} />;
+      case 'other':
+        return <WrenchScrewdriverIcon {...props} />;
+      default:
+        return null;
+    }
+  };
+
+  const MethodIcon = ({ name }) => {
+    const style = { width: 18, height: 18 };
+    const props = { style, 'aria-hidden': true };
+    switch (name) {
+      case 'upi':
+        return <DevicePhoneMobileIcon {...props} />;
+      case 'bank_transfer':
+        return <BuildingLibraryIcon {...props} />;
+      case 'wallet':
+        return <WalletIcon {...props} />;
+      case 'cash':
+        return <CurrencyRupeeIcon {...props} />;
+      default:
+        return null;
+    }
+  };
 
   const updatePaymentData = (field, value) => {
     setPaymentData(prev => ({ ...prev, [field]: value }));
@@ -109,7 +161,10 @@ const PaymentGateway = ({ userId, onPaymentSuccess }) => {
 
   const renderAmountStep = () => (
     <div className="payment-step">
-      <h3>💰 Enter Your Earnings</h3>
+      <h3 style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <BanknotesIcon style={{ width: 20, height: 20 }} aria-hidden />
+        Enter Your Earnings
+      </h3>
       <p>How much did you earn today?</p>
       
       <div className="form-group">
@@ -134,7 +189,7 @@ const PaymentGateway = ({ userId, onPaymentSuccess }) => {
               className={`platform-option ${paymentData.platform === platform.key ? 'selected' : ''}`}
               onClick={() => updatePaymentData('platform', platform.key)}
             >
-              <span className="platform-icon">{platform.icon}</span>
+              <span className="platform-icon"><PlatformIcon name={platform.key} /></span>
               <span className="platform-name">{platform.name}</span>
             </button>
           ))}
@@ -155,7 +210,10 @@ const PaymentGateway = ({ userId, onPaymentSuccess }) => {
 
   const renderMethodStep = () => (
     <div className="payment-step">
-      <h3>💳 Choose Payment Method</h3>
+      <h3 style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <CreditCardIcon style={{ width: 20, height: 20 }} aria-hidden />
+        Choose Payment Method
+      </h3>
       <p>How would you like to deposit your earnings?</p>
       
       <div className="payment-methods">
@@ -166,13 +224,15 @@ const PaymentGateway = ({ userId, onPaymentSuccess }) => {
             onClick={() => handleMethodSelect(method.key)}
           >
             <div className="method-header">
-              <span className="method-icon">{method.icon}</span>
+              <span className="method-icon"><MethodIcon name={method.key} /></span>
               <div className="method-info">
                 <h4>{method.name}</h4>
                 <p>{method.description}</p>
               </div>
             </div>
-            <span className="method-arrow">→</span>
+            <span className="method-arrow" aria-hidden>
+              <ChevronRightIcon style={{ width: 18, height: 18 }} />
+            </span>
           </button>
         ))}
       </div>
@@ -188,7 +248,10 @@ const PaymentGateway = ({ userId, onPaymentSuccess }) => {
 
   const renderConfirmStep = () => (
     <div className="payment-step">
-      <h3>✅ Confirm Payment</h3>
+      <h3 style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <CheckCircleIcon style={{ width: 20, height: 20 }} aria-hidden />
+        Confirm Payment
+      </h3>
       <p>Review your payment details before confirming</p>
       
       <div className="payment-summary">
@@ -199,15 +262,13 @@ const PaymentGateway = ({ userId, onPaymentSuccess }) => {
         <div className="summary-item">
           <span className="summary-label">Platform:</span>
           <span className="summary-value">
-            {platforms.find(p => p.key === paymentData.platform)?.icon} 
-            {platforms.find(p => p.key === paymentData.platform)?.name}
+            <PlatformIcon name={paymentData.platform} /> {platforms.find(p => p.key === paymentData.platform)?.name}
           </span>
         </div>
         <div className="summary-item">
           <span className="summary-label">Payment Method:</span>
           <span className="summary-value">
-            {paymentMethods.find(m => m.key === paymentData.paymentMethod)?.icon} 
-            {paymentMethods.find(m => m.key === paymentData.paymentMethod)?.name}
+            <MethodIcon name={paymentData.paymentMethod} /> {paymentMethods.find(m => m.key === paymentData.paymentMethod)?.name}
           </span>
         </div>
         <div className="summary-item">
@@ -276,7 +337,9 @@ const PaymentGateway = ({ userId, onPaymentSuccess }) => {
 
   const renderSuccessStep = () => (
     <div className="payment-step success">
-      <div className="success-icon">✅</div>
+      <div className="success-icon" aria-hidden>
+        <CheckCircleIcon style={{ width: 28, height: 28 }} />
+      </div>
       <h3>Payment Successful!</h3>
       <p>Your earnings have been deposited into SmartJar</p>
       
@@ -296,24 +359,27 @@ const PaymentGateway = ({ userId, onPaymentSuccess }) => {
       </div>
 
       <div className="jar-allocation-preview">
-        <h4>💰 Jar Allocation Preview</h4>
+        <h4 style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <BanknotesIcon style={{ width: 18, height: 18 }} aria-hidden />
+          Jar Allocation Preview
+        </h4>
         <div className="jar-preview-grid">
           <div className="jar-preview-item">
-            <span className="jar-icon">💰</span>
+            <span className="jar-icon" aria-hidden><BanknotesIcon style={{ width: 18, height: 18 }} /></span>
             <div>
               <strong>Salary Jar</strong>
               <p>₹{formatCurrency(paymentData.amount * 0.6)} (60%)</p>
             </div>
           </div>
           <div className="jar-preview-item">
-            <span className="jar-icon">🛡️</span>
+            <span className="jar-icon" aria-hidden><ShieldCheckIcon style={{ width: 18, height: 18 }} /></span>
             <div>
               <strong>Emergency Jar</strong>
               <p>₹{formatCurrency(paymentData.amount * 0.25)} (25%)</p>
             </div>
           </div>
           <div className="jar-preview-item">
-            <span className="jar-icon">🚀</span>
+            <span className="jar-icon" aria-hidden><RocketLaunchIcon style={{ width: 18, height: 18 }} /></span>
             <div>
               <strong>Future Jar</strong>
               <p>₹{formatCurrency(paymentData.amount * 0.15)} (15%)</p>
@@ -353,7 +419,10 @@ const PaymentGateway = ({ userId, onPaymentSuccess }) => {
       </div>
 
       <div className="payment-info">
-        <h4>ℹ️ How it works:</h4>
+        <h4 style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <InformationCircleIcon style={{ width: 18, height: 18 }} aria-hidden />
+          How it works:
+        </h4>
         <div className="info-steps">
           <div className="info-step">
             <span className="step-number">1</span>

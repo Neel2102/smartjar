@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { userAPI } from "../services/api";
 import "../styles/Login.css"; // Reusing the login CSS for styling
+import Logo from "../components/Logo";
 
 const Register = ({ onUserCreated }) => {
   const [formData, setFormData] = useState({
@@ -72,7 +73,9 @@ const Register = ({ onUserCreated }) => {
     <div className="login-page">
       <div className="login-container">
         <div className="login-header">
-          <h2 className="brand-title">SmartJar</h2>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.5rem' }}>
+            <Logo size={32} showText={true} />
+          </div>
           <h1>Create Account</h1>
           <p>Join SmartJar and start your financial journey</p>
         </div>

@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { formatCurrency } from '../utils/formatters';
+import { BanknotesIcon, ShieldCheckIcon, RocketLaunchIcon } from '@heroicons/react/24/outline';
 
 const JarCard = ({ type, amount, percentage, totalIncome }) => {
   const getJarInfo = () => {
@@ -9,21 +10,21 @@ const JarCard = ({ type, amount, percentage, totalIncome }) => {
           label: 'Salary Jar',
           color: 'salary',
           description: 'Daily spending needs',
-          icon: '💰'
+          icon: 'salary'
         };
       case 'emergency':
         return {
           label: 'Emergency Jar',
           color: 'emergency',
           description: 'Safety buffer',
-          icon: '🆘'
+          icon: 'emergency'
         };
       case 'future':
         return {
           label: 'Future Jar',
           color: 'future',
           description: 'Long-term savings',
-          icon: '🚀'
+          icon: 'future'
         };
       default:
         return { label: '', color: '', description: '', icon: '' };
@@ -32,19 +33,22 @@ const JarCard = ({ type, amount, percentage, totalIncome }) => {
 
   const jarInfo = getJarInfo();
   const progressPercentage = totalIncome > 0 ? (amount / totalIncome) * 100 : 0;
-  const barColor = useMemo(() => {
-    switch (type) {
-      case 'salary': return '#4CAF50';
-      case 'emergency': return '#FF9800';
-      case 'future': return '#2196F3';
-      default: return '#667eea';
+  const barColor = useMemo(() => 'var(--primary)', []);
+
+  const renderIcon = () => {
+    const props = { style: { width: 28, height: 28 }, 'aria-hidden': true };
+    switch (jarInfo.icon) {
+      case 'salary': return <BanknotesIcon {...props} />;
+      case 'emergency': return <ShieldCheckIcon {...props} />;
+      case 'future': return <RocketLaunchIcon {...props} />;
+      default: return null;
     }
-  }, [type]);
+  };
 
   return (
     <div className={`jar-card ${jarInfo.color}`}>
-      <div className="jar-icon" style={{ fontSize: '3rem', marginBottom: '1rem' }}>
-        {jarInfo.icon}
+      <div className="jar-icon" style={{ marginBottom: '1rem', color: 'var(--primary)' }}>
+        {renderIcon()}
       </div>
       <div className="jar-label">{jarInfo.label}</div>
       <div className={`jar-amount ${jarInfo.color}`}>
@@ -54,7 +58,7 @@ const JarCard = ({ type, amount, percentage, totalIncome }) => {
         {percentage}% of income • {progressPercentage.toFixed(1)}% of total
       </div>
       <div style={{ marginTop: '0.75rem' }}>
-        <div style={{ height: 10, background: '#eaeaea', borderRadius: 6, overflow: 'hidden' }}>
+        <div style={{ height: 10, background: 'var(--border)', borderRadius: 6, overflow: 'hidden' }}>
           <div
             style={{
               width: `${progressPercentage}%`,
@@ -67,7 +71,7 @@ const JarCard = ({ type, amount, percentage, totalIncome }) => {
       </div>
       <div className="jar-description" style={{ 
         marginTop: '1rem', 
-        color: '#666', 
+        color: 'var(--muted)', 
         fontSize: '0.9rem' 
       }}>
         {jarInfo.description}

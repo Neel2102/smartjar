@@ -10,6 +10,7 @@ import ProgressRing from '../components/ProgressRing';
 import PageLayout from '../components/PageLayout';
 import { incomeAPI, expenseAPI } from '../services/api';
 import { formatCurrency, calculateTotal } from '../utils/formatters';
+import { ArrowPathIcon, XCircleIcon } from '@heroicons/react/24/outline';
 
 const Dashboard = ({ userId, user, onUserUpdated }) => {
   const [jarBalances, setJarBalances] = useState({ salary: 0, emergency: 0, future: 0 });
@@ -68,7 +69,9 @@ const Dashboard = ({ userId, user, onUserUpdated }) => {
       <div className="dashboard">
         <div className="container">
           <div style={{ textAlign: 'center', padding: '2rem' }}>
-            <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>⏳</div>
+            <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'center' }}>
+              <ArrowPathIcon style={{ width: 28, height: 28 }} aria-hidden />
+            </div>
             <div>Loading your SmartJar...</div>
           </div>
         </div>
@@ -83,11 +86,14 @@ const Dashboard = ({ userId, user, onUserUpdated }) => {
           <div style={{ 
             textAlign: 'center', 
             padding: '2rem',
-            background: '#ffebee',
-            color: '#c62828',
-            borderRadius: '10px'
+            background: 'var(--primary-light)',
+            color: 'var(--primary)',
+            borderRadius: '10px',
+            border: '1px solid var(--primary-lighter)'
           }}>
-            <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>❌</div>
+            <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'center' }}>
+              <XCircleIcon style={{ width: 28, height: 28 }} aria-hidden />
+            </div>
             <div>{error}</div>
             <button 
               onClick={fetchData} 
@@ -144,7 +150,7 @@ const Dashboard = ({ userId, user, onUserUpdated }) => {
             current={jarBalances.emergency}
             target={emergencyTarget}
             label="Emergency Fund"
-            color="#FF9800"
+            color="var(--primary)"
           />
         </div>
 
