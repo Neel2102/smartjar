@@ -1,9 +1,16 @@
 import React from 'react';
 import JarRatioSettings from '../components/JarRatioSettings';
+import EmergencyFundTarget from '../components/EmergencyFundTarget';
 import PageLayout from '../components/PageLayout';
 import { Cog6ToothIcon } from '@heroicons/react/24/outline';
 
 const SettingsPage = ({ user, onRatiosUpdated }) => {
+  const handleEmergencyGoalUpdated = (updatedUser) => {
+    if (onRatiosUpdated) {
+      onRatiosUpdated(updatedUser);
+    }
+  };
+
   return (
     <PageLayout
       title={
@@ -15,6 +22,7 @@ const SettingsPage = ({ user, onRatiosUpdated }) => {
       subtitle="Customize your jar allocation ratios and preferences"
       user={user}
     >
+      <EmergencyFundTarget user={user} onUpdated={handleEmergencyGoalUpdated} />
       <JarRatioSettings user={user} onRatiosUpdated={onRatiosUpdated} />
     </PageLayout>
   );

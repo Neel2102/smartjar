@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { aiAPI } from '../services/api';
-import { formatCurrency } from '../utils/formatters';
+import { aiAPI, investmentAPI } from '../services/api';
+import { formatCurrency, formatINR } from '../utils/formatters';
 
 // Heroicons components
 const TrendingUpIcon = ({ className = "w-6 h-6" }) => (
@@ -99,9 +99,13 @@ const getIconComponent = (iconName) => {
   return icons[iconName] || TrendingUpIcon;
 };
 
-const InvestmentAssistant = ({ user, jarBalances }) => {
+const InvestmentAssistant = ({ user, jarBalances, recommendation, loadingRecommendation }) => {
   const [investmentRecommendations, setInvestmentRecommendations] = useState(null);
+  const [investmentExplanation, setInvestmentExplanation] = useState(null);
+  const [investmentTips, setInvestmentTips] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [loadingExplanation, setLoadingExplanation] = useState(false);
+  const [loadingTips, setLoadingTips] = useState(false);
   const [selectedInstrument, setSelectedInstrument] = useState(null);
   const [investmentAmount, setInvestmentAmount] = useState(0);
 
@@ -137,7 +141,7 @@ const InvestmentAssistant = ({ user, jarBalances }) => {
         nudges: [
           {
             title: "Start with SIPs",
-            detail: "Systematic Investment Plans are perfect for beginners. Start with ₹500-1000 monthly SIPs in large-cap mutual funds."
+            detail: "Systematic Investment Plans are perfect for beginners. Start with small regular monthly SIPs in large-cap mutual funds to build the investment habit."
           },
           {
             title: "Build Emergency Fund First",
@@ -182,6 +186,68 @@ const InvestmentAssistant = ({ user, jarBalances }) => {
   };
 
   const getInvestmentInstruments = () => {
+    // If we have a recommendation, use the recommended instrument
+    if (recommendation && recommendation.eligible && recommendation.instrument) {
+      const instrumentMap = {
+        'Recurring Deposit': {
+          key: 'rd',
+          name: 'Recurring Deposit (RD)',
+          description: 'Safe, guaranteed returns with regular deposits',
+          risk: 'Very Low',
+          returns: '6-7% annually',
+          minAmount: 500,
+          icon: 'BuildingLibraryIcon',
+          color: '#2563EB'
+        },
+        'Nifty Index Fund': {
+          key: 'sip',
+          name: 'SIP (Nifty Index Fund)',
+          description: 'Regular monthly investments in Nifty Index Fund',
+          risk: 'Low to Medium',
+          returns: '8-12% annually',
+          minAmount: 500,
+          icon: 'TrendingUpIcon',
+          color: '#2563EB'
+        },
+        'Exchange Traded Fund': {
+          key: 'etf',
+          name: 'ETF (Exchange Traded Fund)',
+          description: 'Diversified ETFs tracking market indices',
+          risk: 'Medium',
+          returns: '10-12% annually',
+          minAmount: 500,
+          icon: 'ChartBarIcon',
+          color: '#0EA5E9'
+        },
+        'Balanced Mutual Fund': {
+          key: 'mutual_funds',
+          name: 'Hybrid Mutual Fund',
+          description: 'Balanced portfolio with equity and debt mix',
+          risk: 'Medium',
+          returns: '10-15% annually',
+          minAmount: 1000,
+          icon: 'ChartPieIcon',
+          color: '#2563EB'
+        },
+        'Diversified Equity Fund': {
+          key: 'stocks',
+          name: 'Equity Mix Fund',
+          description: 'Diversified equity fund for long-term growth',
+          risk: 'High',
+          returns: '12-18% annually',
+          minAmount: 1000,
+          icon: 'TrendingUpIcon',
+          color: '#0EA5E9'
+        }
+      };
+
+      const recommended = instrumentMap[recommendation.instrument];
+      if (recommended) {
+        return [recommended];
+      }
+    }
+
+    // Fallback to original logic
     const instruments = [
       {
         key: 'sip',
@@ -225,9 +291,11 @@ const InvestmentAssistant = ({ user, jarBalances }) => {
       }
     ];
 
-    return instruments.filter(instrument => 
+    const filtered = instruments.filter(instrument => 
       user.investmentProfile?.preferredInstruments?.includes(instrument.key)
     );
+    
+    return filtered.length > 0 ? filtered : instruments;
   };
 
   const calculateRecommendedAmount = () => {
@@ -267,8 +335,79 @@ const InvestmentAssistant = ({ user, jarBalances }) => {
     return partners[instrument] || [];
   };
 
+  // Fetch explanation when recommendation changes
   useEffect(() => {
-    if (user.investmentProfile) {
+    if (user?._id && recommendation) {
+      fetchInvestmentExplanation();
+      fetchInvestmentTips();
+    }
+  }, [recommendation, user?._id]);
+
+  // Set investment amount from recommendation when available
+  useEffect(() => {
+    if (recommendation && recommendation.eligible && recommendation.sipAmount) {
+      setInvestmentAmount(recommendation.sipAmount);
+    }
+  }, [recommendation]);
+
+  const fetchInvestmentExplanation = async () => {
+    if (!user?._id) return;
+    
+    setLoadingExplanation(true);
+    try {
+      const response = await investmentAPI.getExplanation(user._id);
+      if (response.data && response.data.explanation) {
+        setInvestmentExplanation(response.data);
+      } else {
+        throw new Error('Invalid response format');
+      }
+    } catch (error) {
+      console.error('Error fetching investment explanation:', error);
+      // Fallback explanation without any numbers
+      if (recommendation && !recommendation.eligible) {
+        setInvestmentExplanation({
+          explanation: "Your emergency fund needs attention before investing. Building a strong financial safety net first ensures you can handle unexpected expenses without disrupting your investment journey. This disciplined approach sets you up for long-term success.",
+          state: 'blocked'
+        });
+      } else if (recommendation && recommendation.eligible) {
+        setInvestmentExplanation({
+          explanation: "Based on your current financial stability and emergency fund progress, now is a good time to start your investment journey. Starting with a systematic approach allows you to build wealth gradually while maintaining your financial security. Consistency and patience will help you achieve your long-term financial goals.",
+          state: 'eligible'
+        });
+      } else {
+        setInvestmentExplanation({
+          explanation: "We're analyzing your financial situation to provide personalized investment recommendations. Building a strong foundation with your emergency fund is key before starting your investment journey.",
+          state: 'analyzing'
+        });
+      }
+    } finally {
+      setLoadingExplanation(false);
+    }
+  };
+
+  const fetchInvestmentTips = async () => {
+    if (!user?._id) return;
+    
+    setLoadingTips(true);
+    try {
+      const response = await investmentAPI.getTips(user._id);
+      setInvestmentTips(response.data.tips || []);
+    } catch (error) {
+      console.error('Error fetching investment tips:', error);
+      // Fallback tips
+      setInvestmentTips([
+        "Start with small regular investments to build the habit of consistent saving.",
+        "Long-term investments typically outperform short-term trading strategies.",
+        "Spread your investments across different asset classes to reduce overall risk.",
+        "Stay updated with market trends and continue learning about personal finance."
+      ]);
+    } finally {
+      setLoadingTips(false);
+    }
+  };
+
+  useEffect(() => {
+    if (user.investmentProfile && !recommendation) {
       getInvestmentRecommendations();
     }
   }, [user.investmentProfile]);
@@ -465,14 +604,163 @@ const InvestmentAssistant = ({ user, jarBalances }) => {
               fontWeight: '700',
               color: '#1E40AF'
             }}>
-              ₹{formatCurrency(jarBalances?.future || 0)}
+              ₹{formatINR(jarBalances?.future || 0)}
             </div>
           </div>
         </div>
       </div>
 
-      {/* AI Recommendations */}
-      {investmentRecommendations && (
+      {/* Investment Recommendation Blocking Message */}
+      {recommendation && !recommendation.eligible && (
+        <div style={{
+          background: 'linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%)',
+          borderRadius: '16px',
+          padding: '1.5rem',
+          border: '2px solid #F59E0B',
+          boxShadow: '0 4px 16px rgba(245, 158, 11, 0.15)',
+          marginBottom: '1.5rem'
+        }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            marginBottom: '1rem',
+            gap: '0.75rem'
+          }}>
+            <div style={{
+              width: '32px',
+              height: '32px',
+              borderRadius: '8px',
+              background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'white',
+              fontSize: '1.2rem'
+            }}>
+              ⚠️
+            </div>
+            <h3 style={{
+              margin: 0,
+              color: '#92400E',
+              fontSize: '1.25rem',
+              fontWeight: '700',
+              letterSpacing: '-0.025em'
+            }}>
+              Investment Not Recommended
+            </h3>
+          </div>
+          <p style={{
+            margin: 0,
+            color: '#78350F',
+            fontSize: '0.95rem',
+            lineHeight: '1.6'
+          }}>
+            {recommendation.reason || 'Your emergency fund needs attention before investing.'}
+            {recommendation.emergencyCoveragePercent !== undefined && (
+              <span style={{ display: 'block', marginTop: '0.5rem', fontWeight: '600' }}>
+                Current Emergency Coverage: {recommendation.emergencyCoveragePercent.toFixed(1)}% (Minimum 30% required)
+              </span>
+            )}
+          </p>
+        </div>
+      )}
+
+      {/* Start Small SIP Card */}
+      {recommendation && recommendation.eligible && recommendation.sipAmount && (
+        <div style={{
+          background: 'linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%)',
+          borderRadius: '16px',
+          padding: '1.5rem',
+          border: '2px solid #10B981',
+          boxShadow: '0 4px 16px rgba(16, 185, 129, 0.15)',
+          marginBottom: '1.5rem'
+        }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            marginBottom: '1.25rem',
+            gap: '0.75rem'
+          }}>
+            <div style={{
+              width: '32px',
+              height: '32px',
+              borderRadius: '8px',
+              background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'white'
+            }}>
+              <TrendingUpIcon className="w-4 h-4" />
+            </div>
+            <h3 style={{
+              margin: 0,
+              color: '#1F2937',
+              fontSize: '1.25rem',
+              fontWeight: '700',
+              letterSpacing: '-0.025em'
+            }}>
+              Start Small SIP
+            </h3>
+          </div>
+          
+          <div style={{
+            background: 'linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%)',
+            padding: '1.25rem',
+            borderRadius: '12px',
+            border: '1px solid #6EE7B7',
+            marginBottom: '1rem'
+          }}>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '1rem'
+            }}>
+              <div>
+                <div style={{
+                  fontSize: '0.75rem',
+                  fontWeight: '600',
+                  color: '#065F46',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px',
+                  marginBottom: '0.5rem'
+                }}>
+                  Recommended Monthly SIP
+                </div>
+                <div style={{
+                  fontSize: '2rem',
+                  fontWeight: '700',
+                  color: '#047857'
+                }}>
+                  ₹{formatINR(recommendation.sipAmount)}
+                </div>
+              </div>
+              <div style={{
+                fontSize: '2rem'
+              }}>
+                💰
+              </div>
+            </div>
+            <div style={{
+              fontSize: '0.875rem',
+              color: '#065F46',
+              lineHeight: '1.5'
+            }}>
+              <strong>Instrument:</strong> {recommendation.instrument || 'Nifty Index Fund'}<br />
+              <strong>Strategy:</strong> {recommendation.strategy || 'Index SIP'}<br />
+              {recommendation.reason && (
+                <span style={{ display: 'block', marginTop: '0.5rem' }}>
+                  {recommendation.reason}
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* AI Investment Recommendations - Dynamic Explanation */}
+      {(investmentExplanation || recommendation) && (
         <div className="ai-recommendations">
           <div style={{
             display: 'flex',
@@ -509,17 +797,49 @@ const InvestmentAssistant = ({ user, jarBalances }) => {
             border: '1px solid #BAE6FD',
             marginBottom: '1.25rem'
           }}>
-            <p style={{
-              margin: 0,
-              color: '#1F2937',
-              fontSize: '0.95rem',
-              lineHeight: '1.6'
-            }}>
-              {investmentRecommendations.summary}
-            </p>
+            {loadingExplanation ? (
+              <p style={{
+                margin: 0,
+                color: '#6B7280',
+                fontSize: '0.95rem',
+                lineHeight: '1.6',
+                fontStyle: 'italic'
+              }}>
+                Analyzing your financial situation...
+              </p>
+            ) : investmentExplanation?.explanation ? (
+              <p style={{
+                margin: 0,
+                color: '#1F2937',
+                fontSize: '0.95rem',
+                lineHeight: '1.6'
+              }}>
+                {investmentExplanation.explanation}
+              </p>
+            ) : recommendation?.reason ? (
+              <p style={{
+                margin: 0,
+                color: '#1F2937',
+                fontSize: '0.95rem',
+                lineHeight: '1.6'
+              }}>
+                {recommendation.reason}
+              </p>
+            ) : (
+              <p style={{
+                margin: 0,
+                color: '#6B7280',
+                fontSize: '0.95rem',
+                lineHeight: '1.6',
+                fontStyle: 'italic'
+              }}>
+                Preparing your personalized investment explanation...
+              </p>
+            )}
           </div>
           
-          {investmentRecommendations.nudges && investmentRecommendations.nudges.length > 0 && (
+          {/* Keep existing AI recommendations if available (from old AI coach) */}
+          {investmentRecommendations && investmentRecommendations.nudges && investmentRecommendations.nudges.length > 0 && (
             <div>
               <h4 style={{
                 margin: '0 0 1rem 0',
@@ -570,7 +890,8 @@ const InvestmentAssistant = ({ user, jarBalances }) => {
         </div>
       )}
 
-      {/* Investment Instruments */}
+      {/* Investment Instruments - Hidden when not eligible */}
+      {(!recommendation || recommendation.eligible) && (
       <div style={{
         background: 'linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%)',
         borderRadius: '16px',
@@ -611,10 +932,12 @@ const InvestmentAssistant = ({ user, jarBalances }) => {
           gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
           gap: '1.25rem'
         }}>
-          {getInvestmentInstruments().map((instrument) => (
+          {getInvestmentInstruments().map((instrument) => {
+            const isDisabled = recommendation && !recommendation.eligible;
+            return (
             <div 
               key={instrument.key} 
-              onClick={() => setSelectedInstrument(instrument.key)}
+              onClick={() => !isDisabled && setSelectedInstrument(instrument.key)}
               style={{
                 background: selectedInstrument === instrument.key 
                   ? 'linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%)'
@@ -624,12 +947,13 @@ const InvestmentAssistant = ({ user, jarBalances }) => {
                 border: selectedInstrument === instrument.key 
                   ? '2px solid #2563EB'
                   : '1px solid #E5E7EB',
-                cursor: 'pointer',
+                cursor: isDisabled ? 'not-allowed' : 'pointer',
                 transition: 'all 0.3s ease',
-                transform: selectedInstrument === instrument.key ? 'translateY(-2px)' : 'translateY(0)',
-                boxShadow: selectedInstrument === instrument.key 
+                transform: selectedInstrument === instrument.key && !isDisabled ? 'translateY(-2px)' : 'translateY(0)',
+                boxShadow: selectedInstrument === instrument.key && !isDisabled
                   ? '0 8px 20px rgba(37, 99, 235, 0.15)'
-                  : '0 2px 8px rgba(0, 0, 0, 0.05)'
+                  : '0 2px 8px rgba(0, 0, 0, 0.05)',
+                opacity: isDisabled ? 0.6 : 1
               }}
             >
               <div style={{
@@ -745,17 +1069,19 @@ const InvestmentAssistant = ({ user, jarBalances }) => {
                     fontWeight: '600',
                     color: '#1F2937'
                   }}>
-                    ₹{formatCurrency(instrument.minAmount)}
+                    ₹{formatINR(instrument.minAmount)}
                   </div>
                 </div>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       </div>
+      )}
 
       {/* Investment Calculator */}
-      {selectedInstrument && (
+      {selectedInstrument && (!recommendation || recommendation.eligible) && (
         <div style={{
           background: 'linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%)',
           borderRadius: '16px',
@@ -816,17 +1142,25 @@ const InvestmentAssistant = ({ user, jarBalances }) => {
                   borderRadius: '10px',
                   fontSize: '0.95rem',
                   transition: 'all 0.3s ease',
-                  background: '#FFFFFF',
-                  color: '#1F2937'
+                  background: recommendation && !recommendation.eligible ? '#F3F4F6' : '#FFFFFF',
+                  color: '#1F2937',
+                  cursor: recommendation && !recommendation.eligible ? 'not-allowed' : 'text'
                 }}
                 type="number"
                 value={investmentAmount}
-                onChange={(e) => setInvestmentAmount(parseInt(e.target.value) || 0)}
-                placeholder="Enter amount"
+                onChange={(e) => {
+                  if (!recommendation || recommendation.eligible) {
+                    setInvestmentAmount(parseInt(e.target.value) || 0);
+                  }
+                }}
+                placeholder={recommendation && recommendation.sipAmount ? `Recommended: ₹${formatINR(recommendation.sipAmount)}` : "Enter amount"}
                 min={getInvestmentInstruments().find(i => i.key === selectedInstrument)?.minAmount || 0}
+                disabled={recommendation && !recommendation.eligible}
                 onFocus={(e) => {
-                  e.target.style.borderColor = '#2563EB';
-                  e.target.style.boxShadow = '0 0 0 3px rgba(37, 99, 235, 0.1)';
+                  if (recommendation && recommendation.eligible) {
+                    e.target.style.borderColor = '#2563EB';
+                    e.target.style.boxShadow = '0 0 0 3px rgba(37, 99, 235, 0.1)';
+                  }
                 }}
                 onBlur={(e) => {
                   e.target.style.borderColor = '#E5E7EB';
@@ -903,7 +1237,7 @@ const InvestmentAssistant = ({ user, jarBalances }) => {
                   fontWeight: '700',
                   color: '#1E40AF'
                 }}>
-                  ₹{formatCurrency(investmentAmount)}
+                  ₹{formatINR(investmentAmount)}
                 </div>
               </div>
               
@@ -929,7 +1263,7 @@ const InvestmentAssistant = ({ user, jarBalances }) => {
                   fontWeight: '700',
                   color: '#1E40AF'
                 }}>
-                  ₹{formatCurrency(investmentAmount * 12)}
+                  ₹{formatINR(investmentAmount * 12)}
                 </div>
               </div>
               
@@ -955,7 +1289,7 @@ const InvestmentAssistant = ({ user, jarBalances }) => {
                   fontWeight: '700',
                   color: '#1E40AF'
                 }}>
-                  ₹{formatCurrency(Math.round(investmentAmount * 12 * 5 * 0.1))}
+                  ₹{formatINR(Math.round(investmentAmount * 12 * 5 * 0.1))}
                 </div>
               </div>
             </div>
@@ -964,7 +1298,7 @@ const InvestmentAssistant = ({ user, jarBalances }) => {
       )}
 
       {/* Partner Platforms */}
-      {selectedInstrument && (
+      {selectedInstrument && (!recommendation || recommendation.eligible) && (
         <div style={{
           background: 'linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%)',
           borderRadius: '16px',
@@ -1019,7 +1353,7 @@ const InvestmentAssistant = ({ user, jarBalances }) => {
         </div>
       )}
 
-      {/* Investment Tips */}
+      {/* Investment Tips - Dynamic from Gemini */}
       <div style={{
         background: 'linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%)',
         borderRadius: '16px',
@@ -1055,174 +1389,127 @@ const InvestmentAssistant = ({ user, jarBalances }) => {
             Investment Tips
           </h3>
         </div>
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-          gap: '1.25rem'
-        }}>
-          <div style={{
-            background: 'white',
-            padding: '1.25rem',
-            borderRadius: '12px',
-            border: '1px solid #E5E7EB',
-            transition: 'all 0.3s ease',
-            textAlign: 'center'
-          }}>
-            <div style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '10px',
-              background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 1rem',
-              color: 'white',
-              fontSize: '1.2rem'
-            }}>
-              🎯
-            </div>
-            <h4 style={{
-              margin: '0 0 0.5rem 0',
-              color: '#1F2937',
-              fontSize: '1rem',
-              fontWeight: '600'
-            }}>
-              Start Small
-            </h4>
-            <p style={{
-              margin: 0,
-              color: '#6B7280',
-              fontSize: '0.85rem',
-              lineHeight: '1.5'
-            }}>
-              Begin with SIPs of ₹500-1000 to build the habit of regular investing.
-            </p>
+        {loadingTips ? (
+          <div style={{ textAlign: 'center', padding: '2rem', color: '#6B7280' }}>
+            Loading personalized tips...
           </div>
-          
+        ) : investmentTips && investmentTips.length > 0 ? (
           <div style={{
-            background: 'white',
-            padding: '1.25rem',
-            borderRadius: '12px',
-            border: '1px solid #E5E7EB',
-            transition: 'all 0.3s ease',
-            textAlign: 'center'
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+            gap: '1.25rem'
           }}>
-            <div style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '10px',
-              background: 'linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 1rem',
-              color: 'white',
-              fontSize: '1.2rem'
-            }}>
-              ⏰
-            </div>
-            <h4 style={{
-              margin: '0 0 0.5rem 0',
-              color: '#1F2937',
-              fontSize: '1rem',
-              fontWeight: '600'
-            }}>
-              Time in Market
-            </h4>
-            <p style={{
-              margin: 0,
-              color: '#6B7280',
-              fontSize: '0.85rem',
-              lineHeight: '1.5'
-            }}>
-              Long-term investments (5+ years) typically outperform short-term trading.
-            </p>
+            {investmentTips.slice(0, 4).map((tip, index) => {
+              const tipIcons = ['🎯', '⏰', '🔄', '📚'];
+              const tipColors = [
+                'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+                'linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)',
+                'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)',
+                'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)'
+              ];
+              const tipTitles = ['Start Small', 'Time in Market', 'Diversify', 'Keep Learning'];
+              
+              return (
+                <div key={index} style={{
+                  background: 'white',
+                  padding: '1.25rem',
+                  borderRadius: '12px',
+                  border: '1px solid #E5E7EB',
+                  transition: 'all 0.3s ease',
+                  textAlign: 'center'
+                }}>
+                  <div style={{
+                    width: '40px',
+                    height: '40px',
+                    borderRadius: '10px',
+                    background: tipColors[index % tipColors.length],
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    margin: '0 auto 1rem',
+                    color: 'white',
+                    fontSize: '1.2rem'
+                  }}>
+                    {tipIcons[index % tipIcons.length]}
+                  </div>
+                  <h4 style={{
+                    margin: '0 0 0.5rem 0',
+                    color: '#1F2937',
+                    fontSize: '1rem',
+                    fontWeight: '600'
+                  }}>
+                    {tipTitles[index % tipTitles.length]}
+                  </h4>
+                  <p style={{
+                    margin: 0,
+                    color: '#6B7280',
+                    fontSize: '0.85rem',
+                    lineHeight: '1.5'
+                  }}>
+                    {tip}
+                  </p>
+                </div>
+              );
+            })}
           </div>
-          
+        ) : (
           <div style={{
-            background: 'white',
-            padding: '1.25rem',
-            borderRadius: '12px',
-            border: '1px solid #E5E7EB',
-            transition: 'all 0.3s ease',
-            textAlign: 'center'
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+            gap: '1.25rem'
           }}>
-            <div style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '10px',
-              background: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 1rem',
-              color: 'white',
-              fontSize: '1.2rem'
-            }}>
-              🔄
-            </div>
-            <h4 style={{
-              margin: '0 0 0.5rem 0',
-              color: '#1F2937',
-              fontSize: '1rem',
-              fontWeight: '600'
-            }}>
-              Diversify
-            </h4>
-            <p style={{
-              margin: 0,
-              color: '#6B7280',
-              fontSize: '0.85rem',
-              lineHeight: '1.5'
-            }}>
-              Spread your investments across different asset classes to reduce risk.
-            </p>
+            {[
+              { icon: '🎯', title: 'Start Small', text: 'Start with small regular investments to build the habit of consistent saving.', color: 'linear-gradient(135deg, #10B981 0%, #059669 100%)' },
+              { icon: '⏰', title: 'Time in Market', text: 'Long-term investments typically outperform short-term trading strategies.', color: 'linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)' },
+              { icon: '🔄', title: 'Diversify', text: 'Spread your investments across different asset classes to reduce overall risk.', color: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)' },
+              { icon: '📚', title: 'Keep Learning', text: 'Stay updated with market trends and continue learning about personal finance.', color: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)' }
+            ].map((tip, index) => (
+              <div key={index} style={{
+                background: 'white',
+                padding: '1.25rem',
+                borderRadius: '12px',
+                border: '1px solid #E5E7EB',
+                transition: 'all 0.3s ease',
+                textAlign: 'center'
+              }}>
+                <div style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '10px',
+                  background: tip.color,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: '0 auto 1rem',
+                  color: 'white',
+                  fontSize: '1.2rem'
+                }}>
+                  {tip.icon}
+                </div>
+                <h4 style={{
+                  margin: '0 0 0.5rem 0',
+                  color: '#1F2937',
+                  fontSize: '1rem',
+                  fontWeight: '600'
+                }}>
+                  {tip.title}
+                </h4>
+                <p style={{
+                  margin: 0,
+                  color: '#6B7280',
+                  fontSize: '0.85rem',
+                  lineHeight: '1.5'
+                }}>
+                  {tip.text}
+                </p>
+              </div>
+            ))}
           </div>
-          
-          <div style={{
-            background: 'white',
-            padding: '1.25rem',
-            borderRadius: '12px',
-            border: '1px solid #E5E7EB',
-            transition: 'all 0.3s ease',
-            textAlign: 'center'
-          }}>
-            <div style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '10px',
-              background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 1rem',
-              color: 'white',
-              fontSize: '1.2rem'
-            }}>
-              📚
-            </div>
-            <h4 style={{
-              margin: '0 0 0.5rem 0',
-              color: '#1F2937',
-              fontSize: '1rem',
-              fontWeight: '600'
-            }}>
-              Keep Learning
-            </h4>
-            <p style={{
-              margin: 0,
-              color: '#6B7280',
-              fontSize: '0.85rem',
-              lineHeight: '1.5'
-            }}>
-              Stay updated with market trends and financial education resources.
-            </p>
-          </div>
-        </div>
+        )}
       </div>
 
-      {/* Action Buttons */}
+      {/* Action Buttons - Hidden when not eligible */}
+      {(!recommendation || recommendation.eligible) && (
       <div style={{
         display: 'flex',
         gap: '1rem',
@@ -1230,8 +1517,16 @@ const InvestmentAssistant = ({ user, jarBalances }) => {
         flexWrap: 'wrap'
       }}>
         <button 
-          onClick={getInvestmentRecommendations}
-          disabled={loading}
+          onClick={async () => {
+            // Refresh explanation and tips on button click
+            await fetchInvestmentExplanation();
+            await fetchInvestmentTips();
+            // Optionally refresh old AI recommendations too
+            if (user.investmentProfile) {
+              await getInvestmentRecommendations();
+            }
+          }}
+          disabled={loading || loadingExplanation || loadingTips}
           style={{
             background: 'linear-gradient(135deg, #2563EB 0%, #0EA5E9 100%)',
             color: 'white',
@@ -1240,19 +1535,19 @@ const InvestmentAssistant = ({ user, jarBalances }) => {
             padding: '0.875rem 1.5rem',
             fontSize: '0.9rem',
             fontWeight: '600',
-            cursor: loading ? 'not-allowed' : 'pointer',
+            cursor: (loading || loadingExplanation || loadingTips) ? 'not-allowed' : 'pointer',
             display: 'flex',
             alignItems: 'center',
             gap: '0.5rem',
             transition: 'all 0.3s ease',
-            opacity: loading ? 0.7 : 1,
+            opacity: (loading || loadingExplanation || loadingTips) ? 0.7 : 1,
             boxShadow: '0 4px 12px rgba(37, 99, 235, 0.25)'
           }}
         >
-          {loading ? (
+          {(loading || loadingExplanation || loadingTips) ? (
             <>
               <ArrowPathIcon className="w-4 h-4" style={{ animation: 'spin 1s linear infinite' }} />
-              Analyzing...
+              Refreshing...
             </>
           ) : (
             <>
@@ -1282,6 +1577,7 @@ const InvestmentAssistant = ({ user, jarBalances }) => {
           Reset Selection
         </button>
       </div>
+      )}
     </div>
   );
 };

@@ -1,4 +1,4 @@
-// Format currency to Indian Rupees
+// Format currency to Indian Rupees (includes ₹ symbol)
 export const formatCurrency = (amount) => {
   return new Intl.NumberFormat('en-IN', {
     style: 'currency',
@@ -6,6 +6,11 @@ export const formatCurrency = (amount) => {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(amount);
+};
+
+// Format number as INR without currency symbol (for cases where ₹ is already present)
+export const formatINR = (amount) => {
+  return Number(amount).toLocaleString("en-IN");
 };
 
 // Format date to readable format

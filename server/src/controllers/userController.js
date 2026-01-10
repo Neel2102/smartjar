@@ -81,9 +81,46 @@ async function updateUser(req, res) {
 	}
 }
 
+async function updateEmergencyGoal(req, res) {
+	try {
+		const { userId } = req.params;
+		const { emergencyGoal } = req.body;
+
+		if (emergencyGoal === undefined || emergencyGoal === null) {
+			return res.status(400).json({ error: "emergencyGoal is required" });
+		}
+
+		if (typeof emergencyGoal !== 'number' || emergencyGoal < 0) {
+			return res.status(400).json({ error: "emergencyGoal must be a positive number" });
+		}
+
+		const user = await User.findByIdAndUpdate(
+			userId,
+			{ emergencyGoal },
+			{ new: true, runValidators: true }
+		);
+
+		if (!user) {
+			return res.status(404).json({ error: "User not found" });
+		}
+
+		res.json({ 
+			success: true, 
+			emergencyGoal: user.emergencyGoal,
+			user: {
+				_id: user._id,
+				emergencyGoal: user.emergencyGoal
+			}
+		});
+	} catch (err) {
+		res.status(500).json({ error: err.message });
+	}
+}
+
 module.exports = {
 	createUser,
 	getUsers,
 	updateRatios,
-	updateUser
+	updateUser,
+	updateEmergencyGoal
 };

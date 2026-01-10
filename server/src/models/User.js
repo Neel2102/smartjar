@@ -46,6 +46,7 @@ const userSchema = new mongoose.Schema(
         // Existing fields
         monthlyIncomeTarget: { type: Number, default: 0 },
         emergencyFundTarget: { type: Number, default: 0 },
+        emergencyGoal: { type: Number, default: 10000 },
         jarRatios: {
             salary: { type: Number, default: 60 },
             emergency: { type: Number, default: 25 },

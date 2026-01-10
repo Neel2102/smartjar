@@ -13,8 +13,9 @@ const api = axios.create({
 export const userAPI = {
   create: (userData) => api.post('/users', userData),
   getAll: () => api.get('/users'),
-  updateRatios: (userId, ratios) => api.put(`/users/${userId}/ratios`, ratios),
+  updateRatios: (userId, ratios) => api.put(`/users/${userId}/ratios`, { jarRatios: ratios }),
   update: (userId, userData) => api.put(`/users/${userId}`, userData),
+  updateEmergencyGoal: (userId, emergencyGoal) => api.put(`/users/${userId}/emergency-goal`, { emergencyGoal }),
 };
 
 // Income API calls
@@ -34,6 +35,13 @@ export const expenseAPI = {
 // AI Coach API
 export const aiAPI = {
   coach: ({ prompt, context }) => api.post('/ai/coach', { prompt, context }),
+};
+
+// Investment API calls
+export const investmentAPI = {
+  getRecommendation: (userId) => api.get('/investment/recommendation', { params: { userId } }),
+  getExplanation: (userId) => api.get('/investment/explanation', { params: { userId } }),
+  getTips: (userId) => api.get('/investment/tips', { params: { userId } }),
 };
 
 export default api;

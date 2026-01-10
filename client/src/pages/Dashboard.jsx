@@ -9,7 +9,7 @@ import FinancialHealthScore from '../components/FinancialHealthScore';
 import ProgressRing from '../components/ProgressRing';
 import PageLayout from '../components/PageLayout';
 import { incomeAPI, expenseAPI } from '../services/api';
-import { formatCurrency, calculateTotal } from '../utils/formatters';
+import { formatCurrency, formatINR, calculateTotal } from '../utils/formatters';
 import { ArrowPathIcon, XCircleIcon } from '@heroicons/react/24/outline';
 
 const Dashboard = ({ userId, user, onUserUpdated }) => {
@@ -112,7 +112,10 @@ const Dashboard = ({ userId, user, onUserUpdated }) => {
   const totalExpenses = calculateTotal(expenses.map(exp => exp.amount));
   const totalSaved = jarBalances.emergency + jarBalances.future;
   const netIncome = totalIncome - totalExpenses;
-  const emergencyTarget = user?.emergencyFundTarget || 0;
+  // Check for emergencyGoal (new field) or fallback to emergencyFundTarget (backward compatibility)
+  const emergencyGoal = user?.emergencyGoal || user?.emergencyFundTarget || 0;
+  const emergencySaved = jarBalances.emergency || 0;
+  const emergencyCoverage = emergencyGoal > 0 ? Math.round((emergencySaved / emergencyGoal) * 100) : 0;
 
   // Dashboard now focuses on Overview only; other sections are accessible via the top navigation routes
 
@@ -145,10 +148,82 @@ const Dashboard = ({ userId, user, onUserUpdated }) => {
           </div>
         </div>
 
+        {/* Emergency Goal Widget */}
+        {emergencyGoal > 0 && (
+          <div style={{
+            background: 'white',
+            borderRadius: '12px',
+            padding: '1.25rem 1.5rem',
+            marginBottom: '1.5rem',
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
+            border: '1px solid #e5e7eb'
+          }}>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: '1rem'
+            }}>
+              <div>
+                <div style={{
+                  fontSize: '0.875rem',
+                  fontWeight: '600',
+                  color: '#6b7280',
+                  marginBottom: '0.5rem'
+                }}>
+                  Emergency Goal
+                </div>
+                <div style={{
+                  fontSize: '1.125rem',
+                  fontWeight: '700',
+                  color: '#1f2937'
+                }}>
+                  ₹{formatINR(emergencyGoal)}
+                </div>
+              </div>
+              <div>
+                <div style={{
+                  fontSize: '0.875rem',
+                  fontWeight: '600',
+                  color: '#6b7280',
+                  marginBottom: '0.5rem'
+                }}>
+                  Emergency Saved
+                </div>
+                <div style={{
+                  fontSize: '1.125rem',
+                  fontWeight: '700',
+                  color: '#1f2937'
+                }}>
+                  ₹{formatINR(emergencySaved)}
+                </div>
+              </div>
+              <div>
+                <div style={{
+                  fontSize: '0.875rem',
+                  fontWeight: '600',
+                  color: '#6b7280',
+                  marginBottom: '0.5rem'
+                }}>
+                  Coverage
+                </div>
+                <div style={{
+                  fontSize: '1.125rem',
+                  fontWeight: '700',
+                  color: emergencyCoverage >= 30 ? '#10b981' : emergencyCoverage >= 15 ? '#f59e0b' : '#ef4444'
+                }}>
+                  {emergencyCoverage}%
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div style={{ background: 'var(--card)', borderRadius: 15, padding: '1.5rem', marginBottom: '2rem', boxShadow: '0 2px 10px rgba(0,0,0,0.1)' }}>
           <ProgressRing
             current={jarBalances.emergency}
-            target={emergencyTarget}
+            target={emergencyGoal}
             label="Emergency Fund"
             color="var(--primary)"
           />

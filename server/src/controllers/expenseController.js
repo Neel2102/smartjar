@@ -1,4 +1,45 @@
 const Expense = require("../models/Expense");
+const Income = require("../models/Income");
+
+// Calculate current jar balances (incomes - expenses)
+// Deducts expenses in order: Salary → Emergency → Future
+function calculateCurrentJarBalances(incomes, expenses) {
+	// Start with income allocations
+	const balances = incomes.reduce((acc, income) => {
+		acc.salary += income.allocations.salary || 0;
+		acc.emergency += income.allocations.emergency || 0;
+		acc.future += income.allocations.future || 0;
+		return acc;
+	}, { salary: 0, emergency: 0, future: 0 });
+
+	// Deduct expenses in strict order: Salary → Emergency → Future
+	expenses.forEach(expense => {
+		let remaining = expense.amount || 0;
+		
+		// Deduct from Salary Jar first
+		if (remaining > 0 && balances.salary > 0) {
+			const deductFromSalary = Math.min(remaining, balances.salary);
+			balances.salary -= deductFromSalary;
+			remaining -= deductFromSalary;
+		}
+		
+		// Then Emergency Jar
+		if (remaining > 0 && balances.emergency > 0) {
+			const deductFromEmergency = Math.min(remaining, balances.emergency);
+			balances.emergency -= deductFromEmergency;
+			remaining -= deductFromEmergency;
+		}
+		
+		// Finally Future Jar
+		if (remaining > 0 && balances.future > 0) {
+			const deductFromFuture = Math.min(remaining, balances.future);
+			balances.future -= deductFromFuture;
+			remaining -= deductFromFuture;
+		}
+	});
+
+	return balances;
+}
 
 async function addExpense(req, res) {
 	try {
@@ -8,18 +49,43 @@ async function addExpense(req, res) {
 			return res.status(400).json({ error: "userId, amount, category, and description are required" });
 		}
 
+		// Date validation - reject future dates
+		const entryDate = date ? new Date(date) : new Date();
+		const today = new Date();
+		today.setHours(23, 59, 59, 999); // End of today
+		
+		if (entryDate > today) {
+			return res.status(400).json({ error: "Future entries not allowed" });
+		}
+
+		// Calculate current jar balances before adding new expense
+		const existingIncomes = await Income.find({ userId });
+		const existingExpenses = await Expense.find({ userId });
+		
+		const currentBalances = calculateCurrentJarBalances(existingIncomes, existingExpenses);
+		const totalAvailable = currentBalances.salary + currentBalances.emergency + currentBalances.future;
+
+		// Validate sufficient balance
+		if (amount > totalAvailable) {
+			return res.status(400).json({ error: "Insufficient balance across jars" });
+		}
+
+		// Create expense (deduction order is handled in balance calculation)
 		const expense = await Expense.create({
 			userId,
 			amount,
 			category,
 			description,
-			date: date || new Date(),
+			date: entryDate,
 			type: type || 'personal',
 			jarSource: jarSource || 'salary'
 		});
 
 		res.status(201).json(expense);
 	} catch (err) {
+		if (err.code === 11000) {
+			return res.status(400).json({ error: "Duplicate expense entry" });
+		}
 		res.status(500).json({ error: err.message });
 	}
 }

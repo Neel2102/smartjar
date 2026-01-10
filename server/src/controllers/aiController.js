@@ -150,12 +150,12 @@ async function getCoachReply(req, res) {
               insights.push({ type: 'Progress', message: `Future jar: ₹${balances.future}, Emergency: ₹${balances.emergency}.` });
               actions.push({ label: 'View Salary Projection', suggestedEndpoint: 'viewSalary', payload: {} });
             } else if (prompt.includes('invest') || prompt.includes('sip') || prompt.includes('mutual') || prompt.includes('stock')) {
-              summary = "Given your balances and risk appetite is unknown here, start with a small SIP and increase monthly as the emergency jar grows.";
+              summary = "Based on your financial profile, consider starting with a systematic investment approach. Begin with small, regular investments and gradually increase as your emergency fund grows stronger, ensuring you maintain financial stability while building wealth over time.";
               nudges.push(
-                { title: 'Start Small SIP', detail: 'Begin with ₹500–₹1000 per month in a large-cap index fund.' },
-                { title: 'Rule of Thumb', detail: 'Keep 3–6 months of expenses in Emergency before increasing risk.' }
+                { title: 'Start Small SIP', detail: 'Begin with small regular monthly investments in a large-cap index fund to build the habit.' },
+                { title: 'Rule of Thumb', detail: 'Keep adequate months of expenses in Emergency before increasing investment risk.' }
               );
-              insights.push({ type: 'Capacity', message: `You have ₹${balances.future} available in Future jar.` });
+              insights.push({ type: 'Capacity', message: 'Review your Future jar availability and emergency fund coverage before deciding investment amounts.' });
               actions.push({ label: 'Create SIP Plan', suggestedEndpoint: 'createSIP', payload: { amount: 1000, frequency: 'monthly' } });
             } else if (prompt.includes('fuel') || prompt.includes('expense') || prompt.includes('spend') || prompt.includes('budget')) {
               summary = "Your question relates to spending control. Focus on the top categories and set micro-budgets for the next 2 weeks.";

@@ -21,6 +21,8 @@ app.use("/api/income", require("./routes/incomeRoutes"));
 app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/expenses", require("./routes/expenseRoutes"));
 app.use("/api/ai", require("./routes/aiRoutes"));
+app.use("/api/investment", require("./routes/investment.routes"));
+app.use("/api/dashboard", require("./routes/dashboardRoutes"));
 
 // Error handling
 app.use((err, req, res, next) => {
