@@ -17,6 +17,7 @@ const ImportPage = ({ user }) => {
       }
       subtitle="Bulk import your income data from CSV files"
       user={user}
+      showWelcome={false}
     >
       <CSVImport userId={userId} onIncomesImported={handleIncomesImported} />
     </PageLayout>

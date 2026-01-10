@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { formatCurrency, formatDate } from '../utils/formatters';
+import { formatINR, formatDate } from '../utils/formatters';
 
 const ExpenseList = ({ expenses }) => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -44,7 +44,7 @@ const ExpenseList = ({ expenses }) => {
         {currentExpenses.map((expense) => (
           <div key={expense._id} className="expense-item">
             <div>
-              <div className="expense-amount">{formatCurrency(expense.amount)}</div>
+              <div className="expense-amount">{formatINR(expense.amount)}</div>
               <div className="expense-date">{formatDate(expense.date)}</div>
             </div>
             

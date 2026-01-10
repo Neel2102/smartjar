@@ -17,6 +17,7 @@ const AIChatPage = ({ user }) => {
       }
       subtitle="Get personalized financial advice from our AI assistant"
       user={user}
+      showWelcome={false}
     >
       <AdvancedAIChat 
         user={user} 

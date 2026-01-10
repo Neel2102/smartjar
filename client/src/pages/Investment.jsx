@@ -1,25 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import InvestmentAssistant from '../components/InvestmentAssistant';
 import PageLayout from '../components/PageLayout';
-import { useApp } from '../context/AppContext';
 import { ArrowTrendingUpIcon } from '@heroicons/react/24/outline';
-import { investmentAPI } from '../services/api';
+import { investmentAPI, financeAPI } from '../services/api';
 
 const InvestmentPage = ({ user }) => {
-  const { jarBalances } = useApp();
+  const [financeSummary, setFinanceSummary] = useState(null);
   const [recommendation, setRecommendation] = useState(null);
   const [loadingRecommendation, setLoadingRecommendation] = useState(true);
 
   useEffect(() => {
-    const fetchRecommendation = async () => {
+    const fetchData = async () => {
       if (!user?._id) return;
       
       setLoadingRecommendation(true);
       try {
-        const response = await investmentAPI.getRecommendation(user._id);
-        setRecommendation(response.data);
+        const [summaryResponse, recommendationResponse] = await Promise.all([
+          financeAPI.getSummary(user._id),
+          investmentAPI.getRecommendation(user._id)
+        ]);
+        
+        setFinanceSummary(summaryResponse.data);
+        setRecommendation(recommendationResponse.data);
       } catch (error) {
-        console.error('Error fetching investment recommendation:', error);
+        console.error('Error fetching data:', error);
         // Set default blocked state if API fails
         setRecommendation({
           eligible: false,
@@ -30,8 +34,8 @@ const InvestmentPage = ({ user }) => {
       }
     };
 
-    fetchRecommendation();
-  }, [user?._id, jarBalances]);
+    fetchData();
+  }, [user?._id]);
 
   return (
     <PageLayout
@@ -43,10 +47,15 @@ const InvestmentPage = ({ user }) => {
       }
       subtitle="Get personalized investment recommendations"
       user={user}
+      showWelcome={false}
     >
       <InvestmentAssistant 
         user={user} 
-        jarBalances={jarBalances} 
+        jarBalances={financeSummary ? {
+          salary: financeSummary.salaryJar,
+          emergency: financeSummary.emergencyJar,
+          future: financeSummary.futureJar
+        } : { salary: 0, emergency: 0, future: 0 }}
         recommendation={recommendation}
         loadingRecommendation={loadingRecommendation}
       />

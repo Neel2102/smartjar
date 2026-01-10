@@ -14,6 +14,7 @@ const SalaryPage = ({ userId, user }) => {
       }
       subtitle="Track your progress towards consistent monthly salary"
       user={user}
+      showWelcome={false}
     >
       <SalaryProjection userId={userId} user={user} />
     </PageLayout>

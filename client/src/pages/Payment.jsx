@@ -17,6 +17,7 @@ const PaymentPage = ({ user }) => {
       }
       subtitle="Process payments and manage transactions"
       user={user}
+      showWelcome={false}
     >
       <PaymentGateway userId={userId} onPaymentSuccess={handleIncomeAdded} />
     </PageLayout>

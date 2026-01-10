@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { formatCurrency } from '../utils/formatters';
+import { formatINR } from '../utils/formatters';
 import { BanknotesIcon, ShieldCheckIcon, RocketLaunchIcon } from '@heroicons/react/24/outline';
 
 const JarCard = ({ type, amount, percentage, totalIncome }) => {
@@ -52,7 +52,7 @@ const JarCard = ({ type, amount, percentage, totalIncome }) => {
       </div>
       <div className="jar-label">{jarInfo.label}</div>
       <div className={`jar-amount ${jarInfo.color}`}>
-        {formatCurrency(amount)}
+        {formatINR(amount)}
       </div>
       <div className="jar-percentage">
         {percentage}% of income • {progressPercentage.toFixed(1)}% of total

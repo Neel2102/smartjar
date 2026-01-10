@@ -14,6 +14,7 @@ const ToolsPage = ({ user }) => {
       }
       subtitle="Useful calculators and financial planning tools"
       user={user}
+      showWelcome={false}
     >
       <FinancialTools />
     </PageLayout>

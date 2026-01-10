@@ -8,9 +8,9 @@ export const formatCurrency = (amount) => {
   }).format(amount);
 };
 
-// Format number as INR without currency symbol (for cases where ₹ is already present)
+// Format currency to Indian Rupees with ₹ symbol
 export const formatINR = (amount) => {
-  return Number(amount).toLocaleString("en-IN");
+  return `₹${Number(amount).toLocaleString("en-IN")}`;
 };
 
 // Format date to readable format

@@ -17,6 +17,7 @@ const AnalyticsPage = ({ user }) => {
       }
       subtitle="Deep dive into your financial patterns and trends"
       user={user}
+      showWelcome={false}
     >
       <Analytics 
         userId={userId}

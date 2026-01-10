@@ -14,6 +14,7 @@ const EducationPage = ({ user }) => {
       }
       subtitle="Learn essential financial concepts and best practices"
       user={user}
+      showWelcome={false}
     >
       <FinancialEducation />
     </PageLayout>

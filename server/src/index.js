@@ -23,6 +23,7 @@ app.use("/api/expenses", require("./routes/expenseRoutes"));
 app.use("/api/ai", require("./routes/aiRoutes"));
 app.use("/api/investment", require("./routes/investment.routes"));
 app.use("/api/dashboard", require("./routes/dashboardRoutes"));
+app.use("/api/finance", require("./routes/financeRoutes"));
 
 // Error handling
 app.use((err, req, res, next) => {

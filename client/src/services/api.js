@@ -44,4 +44,9 @@ export const investmentAPI = {
   getTips: (userId) => api.get('/investment/tips', { params: { userId } }),
 };
 
+// Finance API calls
+export const financeAPI = {
+  getSummary: (userId) => api.get('/finance/summary', { params: { userId } }),
+};
+
 export default api;

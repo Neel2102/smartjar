@@ -604,7 +604,7 @@ const InvestmentAssistant = ({ user, jarBalances, recommendation, loadingRecomme
               fontWeight: '700',
               color: '#1E40AF'
             }}>
-              ₹{formatINR(jarBalances?.future || 0)}
+              {formatINR(jarBalances?.future || 0)}
             </div>
           </div>
         </div>
@@ -733,7 +733,7 @@ const InvestmentAssistant = ({ user, jarBalances, recommendation, loadingRecomme
                   fontWeight: '700',
                   color: '#047857'
                 }}>
-                  ₹{formatINR(recommendation.sipAmount)}
+                  {formatINR(recommendation.sipAmount)}
                 </div>
               </div>
               <div style={{
@@ -1069,7 +1069,7 @@ const InvestmentAssistant = ({ user, jarBalances, recommendation, loadingRecomme
                     fontWeight: '600',
                     color: '#1F2937'
                   }}>
-                    ₹{formatINR(instrument.minAmount)}
+                    {formatINR(instrument.minAmount)}
                   </div>
                 </div>
               </div>
@@ -1132,7 +1132,7 @@ const InvestmentAssistant = ({ user, jarBalances, recommendation, loadingRecomme
                 color: '#374151',
                 fontSize: '0.875rem'
               }}>
-                Investment Amount (₹)
+                Investment Amount
               </label>
               <input
                 style={{
@@ -1153,7 +1153,7 @@ const InvestmentAssistant = ({ user, jarBalances, recommendation, loadingRecomme
                     setInvestmentAmount(parseInt(e.target.value) || 0);
                   }
                 }}
-                placeholder={recommendation && recommendation.sipAmount ? `Recommended: ₹${formatINR(recommendation.sipAmount)}` : "Enter amount"}
+                placeholder={recommendation && recommendation.sipAmount ? `Recommended: ${formatINR(recommendation.sipAmount)}` : "Enter amount"}
                 min={getInvestmentInstruments().find(i => i.key === selectedInstrument)?.minAmount || 0}
                 disabled={recommendation && !recommendation.eligible}
                 onFocus={(e) => {
@@ -1237,7 +1237,7 @@ const InvestmentAssistant = ({ user, jarBalances, recommendation, loadingRecomme
                   fontWeight: '700',
                   color: '#1E40AF'
                 }}>
-                  ₹{formatINR(investmentAmount)}
+                  {formatINR(investmentAmount)}
                 </div>
               </div>
               
@@ -1263,7 +1263,7 @@ const InvestmentAssistant = ({ user, jarBalances, recommendation, loadingRecomme
                   fontWeight: '700',
                   color: '#1E40AF'
                 }}>
-                  ₹{formatINR(investmentAmount * 12)}
+                  {formatINR(investmentAmount * 12)}
                 </div>
               </div>
               
@@ -1289,7 +1289,7 @@ const InvestmentAssistant = ({ user, jarBalances, recommendation, loadingRecomme
                   fontWeight: '700',
                   color: '#1E40AF'
                 }}>
-                  ₹{formatINR(Math.round(investmentAmount * 12 * 5 * 0.1))}
+                  {formatINR(Math.round(investmentAmount * 12 * 5 * 0.1))}
                 </div>
               </div>
             </div>

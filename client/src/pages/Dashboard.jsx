@@ -8,12 +8,12 @@ import FinancialHealthScore from '../components/FinancialHealthScore';
 // Removed per simplified dashboard; these features are accessible via top navigation routes
 import ProgressRing from '../components/ProgressRing';
 import PageLayout from '../components/PageLayout';
-import { incomeAPI, expenseAPI } from '../services/api';
-import { formatCurrency, formatINR, calculateTotal } from '../utils/formatters';
+import { incomeAPI, expenseAPI, financeAPI } from '../services/api';
+import { formatINR, calculateTotal } from '../utils/formatters';
 import { ArrowPathIcon, XCircleIcon } from '@heroicons/react/24/outline';
 
 const Dashboard = ({ userId, user, onUserUpdated }) => {
-  const [jarBalances, setJarBalances] = useState({ salary: 0, emergency: 0, future: 0 });
+  const [financeSummary, setFinanceSummary] = useState(null);
   const [incomes, setIncomes] = useState([]);
   const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -28,13 +28,13 @@ const Dashboard = ({ userId, user, onUserUpdated }) => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [balancesResponse, incomesResponse, expensesResponse] = await Promise.all([
-        incomeAPI.getJarBalances(userId),
+      const [summaryResponse, incomesResponse, expensesResponse] = await Promise.all([
+        financeAPI.getSummary(userId),
         incomeAPI.getAll(userId),
         expenseAPI.getAll(userId)
       ]);
       
-      setJarBalances(balancesResponse.data);
+      setFinanceSummary(summaryResponse.data);
       setIncomes(incomesResponse.data);
       setExpenses(expensesResponse.data);
     } catch (err) {
@@ -47,17 +47,17 @@ const Dashboard = ({ userId, user, onUserUpdated }) => {
 
   const handleIncomeAdded = (newIncome) => {
     setIncomes(prev => [newIncome, ...prev]);
-    fetchData(); // Refresh jar balances
+    fetchData(); // Refresh finance summary
   };
 
   const handleExpenseAdded = (newExpense) => {
     setExpenses(prev => [newExpense, ...prev]);
-    fetchData(); // Refresh jar balances
+    fetchData(); // Refresh finance summary
   };
 
   const handleIncomesImported = (importedIncomes) => {
     setIncomes(prev => [...importedIncomes, ...prev]);
-    fetchData(); // Refresh jar balances
+    fetchData(); // Refresh finance summary
   };
 
   const handleUserUpdated = (updatedUser) => {
@@ -108,14 +108,19 @@ const Dashboard = ({ userId, user, onUserUpdated }) => {
     );
   }
 
-  const totalIncome = calculateTotal(incomes.map(inc => inc.amount));
-  const totalExpenses = calculateTotal(expenses.map(exp => exp.amount));
-  const totalSaved = jarBalances.emergency + jarBalances.future;
-  const netIncome = totalIncome - totalExpenses;
-  // Check for emergencyGoal (new field) or fallback to emergencyFundTarget (backward compatibility)
-  const emergencyGoal = user?.emergencyGoal || user?.emergencyFundTarget || 0;
-  const emergencySaved = jarBalances.emergency || 0;
-  const emergencyCoverage = emergencyGoal > 0 ? Math.round((emergencySaved / emergencyGoal) * 100) : 0;
+  // Use finance summary values (backend-calculated)
+  const totalIncome = financeSummary?.totalIncome || 0;
+  const totalExpenses = financeSummary?.totalExpenses || 0;
+  const totalSaved = (financeSummary?.emergencyJar || 0) + (financeSummary?.futureJar || 0);
+  const netIncome = financeSummary?.netIncome || 0;
+  const emergencyGoal = financeSummary?.emergencyGoal || 0;
+  const emergencySaved = financeSummary?.emergencyJar || 0;
+  const emergencyCoverage = financeSummary?.emergencyCoveragePercent || 0;
+  const jarBalances = financeSummary ? {
+    salary: financeSummary.salaryJar,
+    emergency: financeSummary.emergencyJar,
+    future: financeSummary.futureJar
+  } : { salary: 0, emergency: 0, future: 0 };
 
   // Dashboard now focuses on Overview only; other sections are accessible via the top navigation routes
 
@@ -131,19 +136,19 @@ const Dashboard = ({ userId, user, onUserUpdated }) => {
 
         <div className="stats-grid">
           <div className="stat-card">
-            <div className="stat-number">{formatCurrency(totalIncome)}</div>
+            <div className="stat-number">{formatINR(totalIncome)}</div>
             <div className="stat-label">Total Income</div>
           </div>
           <div className="stat-card">
-            <div className="stat-number">{formatCurrency(totalExpenses)}</div>
+            <div className="stat-number">{formatINR(totalExpenses)}</div>
             <div className="stat-label">Total Expenses</div>
           </div>
           <div className="stat-card">
-            <div className="stat-number">{formatCurrency(netIncome)}</div>
+            <div className="stat-number">{formatINR(netIncome)}</div>
             <div className="stat-label">Net Income</div>
           </div>
           <div className="stat-card">
-            <div className="stat-number">{formatCurrency(totalSaved)}</div>
+            <div className="stat-number">{formatINR(totalSaved)}</div>
             <div className="stat-label">Total Saved</div>
           </div>
         </div>
@@ -179,7 +184,7 @@ const Dashboard = ({ userId, user, onUserUpdated }) => {
                   fontWeight: '700',
                   color: '#1f2937'
                 }}>
-                  ₹{formatINR(emergencyGoal)}
+                  {formatINR(emergencyGoal)}
                 </div>
               </div>
               <div>
@@ -196,7 +201,7 @@ const Dashboard = ({ userId, user, onUserUpdated }) => {
                   fontWeight: '700',
                   color: '#1f2937'
                 }}>
-                  ₹{formatINR(emergencySaved)}
+                  {formatINR(emergencySaved)}
                 </div>
               </div>
               <div>

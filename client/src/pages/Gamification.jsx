@@ -17,6 +17,7 @@ const GamificationPage = ({ user }) => {
       }
       subtitle="Track your progress and unlock achievements"
       user={user}
+      showWelcome={false}
     >
       <Gamification user={user} incomes={incomes} />
     </PageLayout>

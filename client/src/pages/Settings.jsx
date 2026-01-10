@@ -21,6 +21,7 @@ const SettingsPage = ({ user, onRatiosUpdated }) => {
       }
       subtitle="Customize your jar allocation ratios and preferences"
       user={user}
+      showWelcome={false}
     >
       <EmergencyFundTarget user={user} onUpdated={handleEmergencyGoalUpdated} />
       <JarRatioSettings user={user} onRatiosUpdated={onRatiosUpdated} />
