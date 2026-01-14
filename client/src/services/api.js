@@ -61,6 +61,8 @@ export const investmentAPI = {
 // Finance API calls
 export const financeAPI = {
   getSummary: (userId) => api.get('/finance/summary', { params: { userId } }),
+  calculateSalaryProjection: (userId, emergency_fund_current, today) => api.post('/finance/salary-projection', { userId, emergency_fund_current, today }),
+  getHeatmapLayout: (userId) => api.get('/finance/heatmap-layout', { params: { userId } }),
 };
 
 export default api;

@@ -3,6 +3,8 @@ const Income = require("../models/Income");
 const Expense = require("../models/Expense");
 const { calculateSalaryProjection } = require("../utils/salaryProjectionEngine");
 const { processEarningsTrend } = require("../utils/earningsTrendUIEngine");
+const { generateHeatmap } = require("../utils/heatmapEngine");
+const { generateHeatmapLayout } = require("../utils/heatmapLayoutEngine");
 
 // Calculate jar balances with expense deductions
 function calculateJarBalances(incomes, expenses) {
@@ -212,8 +214,56 @@ async function getEarningsTrendUI(req, res) {
 	}
 }
 
+async function getHeatmapLayout(req, res) {
+	try {
+		const { userId } = req.query;
+		
+		if (!userId) {
+			return res.status(400).json({ error: "userId required" });
+		}
+
+		// Get user income history
+		const incomes = await Income.find({ userId }).sort({ receivedAt: -1 });
+
+		// Prepare daily income data
+		const daily_income = incomes.reduce((acc, income) => {
+			const date = new Date(income.receivedAt).toISOString().slice(0, 10);
+			if (!acc[date]) {
+				acc[date] = 0;
+			}
+			acc[date] += income.amount || 0;
+			return acc;
+		}, {});
+
+		// Convert to array format
+		const daily_income_array = Object.entries(daily_income).map(([date, income]) => ({
+			date: date,
+			income: income
+		}));
+
+		// Calculate average daily income
+		const total_income = daily_income_array.reduce((sum, day) => sum + day.income, 0);
+		const average_daily = daily_income_array.length > 0 ? Math.round(total_income / daily_income_array.length) : 0;
+
+		// Generate basic heatmap
+		const today = new Date().toISOString().slice(0, 10);
+		const basic_heatmap = generateHeatmap(daily_income_array, average_daily, today);
+
+		// Generate layout using only real past dates
+		const result = generateHeatmapLayout(basic_heatmap.heatmap, today);
+
+		// Output JSON only
+		res.json(result);
+
+	} catch (err) {
+		console.error("Heatmap layout error:", err);
+		res.status(500).json({ error: err.message });
+	}
+}
+
 module.exports = {
 	getFinanceSummary,
 	calculateSalaryProjectionAPI,
-	getEarningsTrendUI
+	getEarningsTrendUI,
+	getHeatmapLayout
 };
