@@ -345,6 +345,18 @@ const SalaryProjection = ({ userId, user }) => {
           </h3>
         </div>
 
+        {(!financeSummary.last14DaysEarnings || financeSummary.last14DaysEarnings.length === 0) && (
+          <div style={{
+            padding: '2rem',
+            textAlign: 'center',
+            color: '#6b7280',
+            fontSize: '0.875rem'
+          }}>
+            No earnings data available for last 14 days
+          </div>
+        )}
+
+        {financeSummary.last14DaysEarnings && financeSummary.last14DaysEarnings.length > 0 && (
         <div style={{
           display: 'flex',
           alignItems: 'flex-end',
@@ -356,65 +368,113 @@ const SalaryProjection = ({ userId, user }) => {
           borderRadius: '12px',
           marginBottom: '1rem'
         }}>
-          {financeSummary.last14DaysEarnings.map((day, index) => {
-            const maxTotal = Math.max(...financeSummary.last14DaysEarnings.map(d => d.total || 0), 1);
-            const heightPercent = maxTotal > 0 ? ((day.total || 0) / maxTotal) * 100 : 0;
+          {(() => {
+            const data = financeSummary.last14DaysEarnings;
             
-            return (
-              <div key={index} style={{
-                flex: 1,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: '0.5rem'
-              }}>
-                <div style={{
-                  width: '100%',
-                  background: 'linear-gradient(180deg, #667eea 0%, #764ba2 100%)',
-                  borderRadius: '4px 4px 0 0',
-                  height: `${heightPercent}%`,
-                  minHeight: '8px',
-                  transition: 'height 0.3s ease',
-                  position: 'relative'
-                }}
-                onMouseEnter={(e) => {
-                  const tooltip = e.currentTarget.querySelector('.tooltip');
-                  if (tooltip) tooltip.style.opacity = '1';
-                }}
-                onMouseLeave={(e) => {
-                  const tooltip = e.currentTarget.querySelector('.tooltip');
-                  if (tooltip) tooltip.style.opacity = '0';
+            // Ensure we have valid data
+            if (!data || data.length === 0) {
+              return <div>No data available</div>;
+            }
+            
+            const maxVal = Math.max(...data.map(d => d.total || 0), 1);
+            
+            return data.map((day, index) => {
+              const total = day.total || 0;
+              const zone = day.zone || 'inactive';
+              
+              // Calculate height as percentage: (total / maxVal) * 100%
+              const heightPercent = (total / maxVal) * 100;
+              // Minimum 4px height for zero values (4px out of 200px container = 2%)
+              const minHeightPercent = (4 / 200) * 100;
+              const finalHeightPercent = Math.max(heightPercent, minHeightPercent);
+              
+              // Color mapping based on zone
+              let barColor;
+              switch (zone) {
+                case 'strong':
+                  barColor = '#3B82F6'; // Blue
+                  break;
+                case 'stable':
+                  barColor = '#8B5CF6'; // Purple
+                  break;
+                case 'weak':
+                  barColor = '#F59E0B'; // Amber
+                  break;
+                case 'inactive':
+                default:
+                  barColor = '#E5E7EB'; // Grey
+                  break;
+              }
+              
+              return (
+                <div key={index} style={{
+                  flex: 1,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '0.5rem'
                 }}>
-                  <div className="tooltip" style={{
-                    position: 'absolute',
-                    top: '-28px',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    fontSize: '0.6875rem',
-                    fontWeight: '600',
-                    color: '#374151',
-                    whiteSpace: 'nowrap',
-                    opacity: 0,
-                    transition: 'opacity 0.2s ease'
+                  <div style={{
+                    width: '100%',
+                    background: barColor,
+                    borderRadius: '4px 4px 0 0',
+                    height: `${finalHeightPercent}%`,
+                    minHeight: '4px', // Ensure minimum visibility
+                    border: '1px solid #e5e7eb', // Add border for visibility
+                    transition: 'height 0.3s ease',
+                    position: 'relative'
+                  }}
+                  onMouseEnter={(e) => {
+                    const tooltip = e.currentTarget.querySelector('.tooltip');
+                    if (tooltip) tooltip.style.opacity = '1';
+                  }}
+                  onMouseLeave={(e) => {
+                    const tooltip = e.currentTarget.querySelector('.tooltip');
+                    if (tooltip) tooltip.style.opacity = '0';
                   }}>
-                    {formatINR(day.total || 0)}
+                    <div className="tooltip" style={{
+                      position: 'absolute',
+                      top: '-28px',
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      fontSize: '0.6875rem',
+                      fontWeight: '600',
+                      color: '#374151',
+                      whiteSpace: 'nowrap',
+                      opacity: 0,
+                      transition: 'opacity 0.2s ease'
+                    }}>
+                      {formatINR(day.total || 0)}
+                    </div>
+                  </div>
+                  <div style={{
+                    fontSize: '0.6875rem',
+                    color: '#9ca3af',
+                    fontWeight: '500',
+                    textAlign: 'center'
+                  }}>
+                    {new Date(day.date).toLocaleDateString('en-IN', { 
+                      day: '2-digit', 
+                      month: 'short' 
+                    })}
                   </div>
                 </div>
-                <div style={{
-                  fontSize: '0.6875rem',
-                  color: '#9ca3af',
-                  fontWeight: '500',
-                  textAlign: 'center'
-                }}>
-                  {new Date(day.date).toLocaleDateString('en-IN', { 
-                    day: '2-digit', 
-                    month: 'short' 
-                  })}
-                </div>
-              </div>
-            );
-          })}
+              );
+            });
+          })()}
         </div>
+        )}
+
+        {(!financeSummary.last14DaysEarnings || financeSummary.last14DaysEarnings.length === 0) && (
+          <div style={{
+            padding: '2rem',
+            textAlign: 'center',
+            color: '#6b7280',
+            fontSize: '0.875rem'
+          }}>
+            No earnings data available for the last 14 days
+          </div>
+        )}
 
         <div style={{ fontSize: '0.875rem', color: '#6b7280', textAlign: 'center' }}>
           Last 14 days of earnings
