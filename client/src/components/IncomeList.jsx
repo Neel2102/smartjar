@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { formatINR, formatDate } from '../utils/formatters';
+import { incomeAPI } from '../services/api';
 
-const IncomeList = ({ incomes }) => {
+const IncomeList = ({ incomes, userId }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [entriesPerPage] = useState(5); // Adjust based on container height
 
@@ -9,6 +10,27 @@ const IncomeList = ({ incomes }) => {
   useEffect(() => {
     setCurrentPage(1);
   }, [incomes]);
+
+  const handleDownloadIncome = async () => {
+    try {
+      console.log('Starting income download for userId:', userId);
+      const response = await incomeAPI.exportIncome(userId);
+      console.log('Download response:', response);
+      
+      // Create download link
+      const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }));
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'income_history.xlsx';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error downloading income history:', error);
+      alert('Failed to download income history: ' + error.message);
+    }
+  };
 
   if (!incomes || incomes.length === 0) {
     return (
@@ -77,6 +99,13 @@ const IncomeList = ({ incomes }) => {
                 disabled={currentPage === 1}
               >
                 Previous
+              </button>
+              <button 
+                className="pagination-btn download-btn" 
+                onClick={handleDownloadIncome}
+                style={{ marginLeft: '0.5rem' }}
+              >
+                Download
               </button>
               <button 
                 className="pagination-btn" 

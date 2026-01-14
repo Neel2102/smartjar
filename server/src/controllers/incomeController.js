@@ -1,6 +1,7 @@
 const Income = require("../models/Income");
 const User = require("../models/User");
 const { allocate } = require("../utils/allocation");
+const XLSX = require('xlsx');
 
 async function addIncome(req, res) {
 	try {
@@ -102,4 +103,41 @@ async function getJarBalances(req, res) {
 	}
 }
 
-module.exports = { addIncome, getIncomes, getJarBalances };
+async function exportIncome(req, res) {
+	try {
+		const { userId } = req.query;
+		
+		if (!userId) {
+			return res.status(400).json({ error: "userId required" });
+		}
+
+		// Get all user income records
+		const incomes = await Income.find({ userId }).sort({ receivedAt: -1 });
+		
+		// Prepare data for Excel
+		const excelData = incomes.map(income => ({
+			amount: income.amount || 0,
+			source: income.source || 'gig',
+			receivedAt: new Date(income.receivedAt).toISOString().slice(0, 10)
+		}));
+
+		// Create workbook and worksheet
+		const ws = XLSX.utils.json_to_sheet(excelData);
+		const wb = XLSX.utils.book_new();
+		XLSX.utils.book_append_sheet(wb, ws, "Income History");
+
+		// Generate buffer
+		const excelBuffer = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
+
+		// Set headers for download
+		res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+		res.setHeader('Content-Disposition', 'attachment; filename=income_history.xlsx');
+		res.send(excelBuffer);
+
+	} catch (err) {
+		console.error("Income export error:", err);
+		res.status(500).json({ error: err.message });
+	}
+}
+
+module.exports = { addIncome, getIncomes, getJarBalances, exportIncome };

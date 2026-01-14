@@ -263,7 +263,7 @@ const Dashboard = ({ userId, user, onUserUpdated }) => {
               <IncomeForm onIncomeAdded={handleIncomeAdded} userId={userId} />
             </div>
             <div className="dashboard-card income-history-card">
-              <IncomeList incomes={incomes} />
+              <IncomeList incomes={incomes} userId={userId} />
             </div>
           </div>
           
@@ -273,7 +273,7 @@ const Dashboard = ({ userId, user, onUserUpdated }) => {
               <ExpenseForm onExpenseAdded={handleExpenseAdded} userId={userId} jarBalances={jarBalances} />
             </div>
             <div className="dashboard-card expense-history-card">
-              <ExpenseList expenses={expenses} />
+              <ExpenseList expenses={expenses} userId={userId} />
             </div>
           </div>
         </div>

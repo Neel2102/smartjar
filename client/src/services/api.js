@@ -23,6 +23,13 @@ export const incomeAPI = {
   add: (incomeData) => api.post('/income', incomeData),
   getAll: (userId) => api.get('/income', { params: { userId } }),
   getJarBalances: (userId) => api.get('/income/jars', { params: { userId } }),
+  exportIncome: (userId) => api.get('/income/export', { 
+    params: { userId },
+    responseType: 'blob',
+    headers: {
+      'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    }
+  }),
 };
 
 // Expense API calls
@@ -30,6 +37,13 @@ export const expenseAPI = {
   add: (expenseData) => api.post('/expenses', expenseData),
   getAll: (userId) => api.get('/expenses', { params: { userId } }),
   getAnalytics: (userId) => api.get('/expenses/analytics', { params: { userId } }),
+  exportExpense: (userId) => api.get('/expenses/export', { 
+    params: { userId },
+    responseType: 'blob',
+    headers: {
+      'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    }
+  }),
 };
 
 // AI Coach API

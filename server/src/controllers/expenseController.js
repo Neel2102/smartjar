@@ -1,5 +1,6 @@
 const Expense = require("../models/Expense");
-const Income = require("../models/Income");
+const User = require("../models/User");
+const XLSX = require('xlsx');
 
 // Calculate current jar balances (incomes - expenses)
 // Deducts expenses in order: Salary → Emergency → Future
@@ -151,8 +152,47 @@ async function getExpenseAnalytics(req, res) {
 	}
 }
 
+async function exportExpense(req, res) {
+	try {
+		const { userId } = req.query;
+		
+		if (!userId) {
+			return res.status(400).json({ error: "userId required" });
+		}
+
+		// Get all user expense records
+		const expenses = await Expense.find({ userId }).sort({ date: -1 });
+		
+		// Prepare data for Excel
+		const excelData = expenses.map(expense => ({
+			amount: expense.amount || 0,
+			category: expense.category || 'other',
+			description: expense.description || '',
+			spentAt: new Date(expense.date).toISOString().slice(0, 10)
+		}));
+
+		// Create workbook and worksheet
+		const ws = XLSX.utils.json_to_sheet(excelData);
+		const wb = XLSX.utils.book_new();
+		XLSX.utils.book_append_sheet(wb, ws, "Expense History");
+
+		// Generate buffer
+		const excelBuffer = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
+
+		// Set headers for download
+		res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+		res.setHeader('Content-Disposition', 'attachment; filename=expense_history.xlsx');
+		res.send(excelBuffer);
+
+	} catch (err) {
+		console.error("Expense export error:", err);
+		res.status(500).json({ error: err.message });
+	}
+}
+
 module.exports = {
 	addExpense,
 	getExpenses,
-	getExpenseAnalytics
+	getExpenseAnalytics,
+	exportExpense
 };
