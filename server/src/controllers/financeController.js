@@ -3,7 +3,6 @@ const Income = require("../models/Income");
 const Expense = require("../models/Expense");
 const { calculateSalaryProjection } = require("../utils/salaryProjectionEngine");
 const { processEarningsTrend } = require("../utils/earningsTrendUIEngine");
-const { generateHeatmap } = require("../utils/heatmapEngine");
 const { generateHeatmapLayout } = require("../utils/heatmapLayoutEngine");
 
 // Calculate jar balances with expense deductions
@@ -241,16 +240,9 @@ async function getHeatmapLayout(req, res) {
 			income: income
 		}));
 
-		// Calculate average daily income
-		const total_income = daily_income_array.reduce((sum, day) => sum + day.income, 0);
-		const average_daily = daily_income_array.length > 0 ? Math.round(total_income / daily_income_array.length) : 0;
-
-		// Generate basic heatmap
+		// Generate GitHub-style heatmap layout
 		const today = new Date().toISOString().slice(0, 10);
-		const basic_heatmap = generateHeatmap(daily_income_array, average_daily, today);
-
-		// Generate layout using only real past dates
-		const result = generateHeatmapLayout(basic_heatmap.heatmap, today);
+		const result = generateHeatmapLayout(daily_income_array, today);
 
 		// Output JSON only
 		res.json(result);
